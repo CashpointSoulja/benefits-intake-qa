@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Benefits Intake QA for Euphoric: independent prototype by Ayo Ahmed</title>
+  <link rel="icon" href="/brand/euphoric-favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <header class="hero">
+    <svg class="lines" viewBox="0 0 1200 400" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M-50 300 C 200 120, 420 380, 700 200 S 1100 60, 1300 180" />
+      <path d="M-50 220 C 260 60, 520 320, 780 140 S 1080 260, 1300 90" />
+      <path d="M-50 360 C 300 260, 560 420, 860 280 S 1120 200, 1300 320" />
+    </svg>
+    <div class="wrap">
+      <nav class="nav">
+        <span class="brandlock">
+          <img class="eu-logo" src="/brand/euphoric-logo.svg" alt="Euphoric logo" width="139" height="31" />
+          <span class="x">×</span>
+          <span class="wordmark">Benefits Intake QA</span>
+        </span>
+        <a class="btn-dark" href="https://github.com/CashpointSoulja/benefits-intake-qa/blob/main/docs/PRD.md" target="_blank" rel="noopener">Read the PRD</a>
+      </nav>
+      <div class="hero-copy">
+        <p class="eyebrow">A concept prepared for Euphoric by Ayo Ahmed</p>
+        <h1>Catch plan-data errors at intake, before they reach go-live.</h1>
+        <p class="lede">Paste or upload a plan document. The tool extracts plan fields, links each one to its source line, and gives the reviewer a short checklist with a clear disposition.</p>
+        <a class="btn-dark" href="#workspace">Try a sample</a>
+        &nbsp; <a class="btn-ghost" href="https://github.com/CashpointSoulja/benefits-intake-qa" target="_blank" rel="noopener">View source</a>
+      </div>
+      <p class="disclaimer"><strong>Independent prototype by Ayo Ahmed, not affiliated with Euphoric.</strong> This is not Euphoric's product, and Euphoric has not endorsed it. The Euphoric logo and screenshots are © Euphoric and come from <a href="https://www.euphoric.global/" target="_blank" rel="noopener">euphoric.global</a>. They are used only to show which company this concept was made for. All plan data is synthetic, so please don't upload real documents or personal data.</p>
+    </div>
+  </header>
+
+  <main class="wrap grid" id="workspace">
+    <section class="card">
+      <h2><span class="step">Step 1</span>Intake document</h2>
+      <div id="drop" class="drop">
+        <span><strong>Drop a PDF here</strong> or <label class="linklike">browse<input id="file" type="file" accept=".pdf,.txt,text/plain,application/pdf" hidden /></label></span>
+        <span class="muted">Text-based PDFs and .txt files work. Scanned PDFs are not supported yet, and text extraction runs in your browser.</span>
+      </div>
+      <div class="row">
+        <span class="muted">Try a sample PDF:</span>
+        <button class="chip" data-sample-pdf="clean-ppo">Clean PPO</button>
+        <button class="chip" data-sample-pdf="messy-hdhp">Messy HDHP</button>
+        <button class="chip" data-sample-pdf="conflicting-values">Conflicting pages</button>
+        <button class="chip" data-sample-pdf="sparse-email">Sparse email</button>
+      </div>
+      <div class="row">
+        <label for="sample">Or paste text, or load a text sample</label>
+        <select id="sample"><option value="">Choose a sample</option></select>
+      </div>
+      <p id="sampleDesc" class="muted"></p>
+      <textarea id="text" rows="12" placeholder="Paste intake text here (carrier summary, SBC excerpt, broker email…)"></textarea>
+      <div class="row">
+        <label class="check"><input id="useAi" type="checkbox" /> Add Workers AI second opinion <span class="muted">(optional; rules always run)</span></label>
+        <span class="spacer"></span><button id="run" class="btn-dark">Analyze document</button>
+      </div>
+      <p id="status" class="muted"></p>
+    </section>
+
+    <section class="card empty" id="empty"><h2>Results appear here</h2><p>Pick a sample, such as <em>Messy HDHP intake form</em>, then choose <strong>Analyze document</strong>.</p></section>
+    <section class="card" id="results" hidden>
+      <h2><span class="step">Step 2</span>Reviewer checklist</h2>
+      <div id="summary" class="summary"></div>
+      <ol id="findings" class="findings"></ol>
+
+      <h2><span class="step">Step 3</span>Review extracted fields</h2>
+      <p class="muted">Each value shows the exact source quote and page it came from. Edit a value or accept it as extracted; for contradictions, pick the quote to keep. Missing fields stay <code>null</code> unless you enter a value. Confidence is a fixed heuristic per pattern, not a calibrated probability.</p>
+      <div class="row review-bar">
+        <span id="reviewProgress" class="pill"></span>
+        <button id="acceptClean" class="chip" type="button">Accept all unflagged</button>
+        <span class="spacer"></span>
+        <button id="download" class="btn-dark" type="button">Download reviewed JSON</button>
+      </div>
+      <table id="fields">
+        <thead><tr><th>Field</th><th>Value &amp; evidence</th><th>Review</th></tr></thead>
+        <tbody></tbody>
+      </table>
+
+      <h2><span class="step">Step 4</span>Source with evidence</h2>
+      <p class="muted">Highlighted spans are the exact quotes above, shown by page.</p>
+      <pre id="source" class="source"></pre>
+
+      <details>
+        <summary>Raw API response (JSON)</summary>
+        <pre id="raw"></pre>
+      </details>
+    </section>
+  </main>
+
+
+  <section class="wrap context">
+    <div class="context-copy">
+      <p class="eyebrow dark">Why this, for Euphoric</p>
+      <h2>Euphoric's platform needs clean plan data. This concept checks the documents that data comes from.</h2>
+      <p>Euphoric's published <a href="https://jobs.ashbyhq.com/euphoric/183a3d36-f4b8-49da-91e2-c17a621ad287" target="_blank" rel="noopener">Forward-Deployed AI Product Associate role</a> covers document analysis, extraction and data input, AI evaluation, and client implementation. Benefits Intake QA is a small, testable slice of that work. It turns a plan document into fields with evidence, runs consistency checks, and gives the reviewer a go/no-go.</p>
+      <p class="muted">The specific pain around PDF intake is my hypothesis. It is not verified with Euphoric or its clients. See the <a href="https://github.com/CashpointSoulja/benefits-intake-qa/blob/main/docs/PRD.md" target="_blank" rel="noopener">PRD</a>.</p>
+    </div>
+    <div class="shots">
+      <figure>
+        <img src="/brand/euphoric-homepage.jpg" alt="Screenshot of the euphoric.global homepage" loading="lazy" />
+        <figcaption>euphoric.global homepage. Screenshot © Euphoric.</figcaption>
+      </figure>
+      <figure>
+        <img src="/brand/euphoric-platform.jpg" alt="Euphoric platform dashboard image from euphoric.global" loading="lazy" />
+        <figcaption>Platform dashboard image published on euphoric.global. © Euphoric.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <footer class="wrap muted">
+    <p><strong>Independent prototype by Ayo Ahmed, not affiliated with Euphoric.</strong> The Euphoric name, logo and screenshots are © Euphoric. How this maps to the job: document analysis (upload/paste), extraction &amp; data input (structured fields with evidence), AI evaluation (<code>npm run eval</code> golden set), client implementation (reviewer disposition: ready / needs review / blocked).</p>
+  </footer>
+
+  <script type="module" src="/app.js"></script>
+</body>
+</html>

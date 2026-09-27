@@ -1,0 +1,26 @@
+{
+  "name": "benefits-intake-qa",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Benefits Intake QA \u2014 independent prototype by Ayo Ahmed (not affiliated with Euphoric)",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "eval": "tsx eval/run.ts",
+    "samples:pdf": "tsx scripts/make-sample-pdfs.ts",
+    "vendor:pdfjs": "mkdir -p public/vendor/pdfjs && cp node_modules/pdfjs-dist/legacy/build/pdf.min.mjs node_modules/pdfjs-dist/legacy/build/pdf.worker.min.mjs node_modules/pdfjs-dist/LICENSE public/vendor/pdfjs/"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260927.1",
+    "@types/node": "^26.6.3",
+    "pdfjs-dist": "^5.4.624",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.2",
+    "wrangler": "^4.142.0"
+  }
+}
