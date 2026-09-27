@@ -9,6 +9,8 @@ export { BudgetGate };
 interface Env extends OpenAiEnv, BudgetEnv {
   ASSETS: Fetcher;
   BUDGET_GATE?: DurableObjectNamespace<BudgetGate>;
+  /** Any non-empty value forces rules only (set for Previews, which get their own empty ledger). */
+  AI_DISABLED?: string;
 }
 
 const MAX_CHARS = 60_000;
@@ -58,7 +60,11 @@ export default {
 
     if (url.pathname === "/api/health") {
       const ai = readOpenAiConfig(env);
-      return json({ ok: true, ai_provider: "openai", ai_configured: "config" in ai && Boolean(env.BUDGET_GATE) });
+      return json({
+        ok: true,
+        ai_provider: "openai",
+        ai_configured: !env.AI_DISABLED?.trim() && "config" in ai && Boolean(env.BUDGET_GATE),
+      });
     }
 
     if (url.pathname === "/api/samples" && request.method === "GET") {
@@ -94,7 +100,8 @@ export default {
       let aiNote: string | undefined;
       if (body.use_ai === true) {
         const ai = readOpenAiConfig(env);
-        if (!("config" in ai)) aiNote = `AI not configured (${ai.missing.join("; ")}); rules only`;
+        if (env.AI_DISABLED?.trim()) aiNote = "AI disabled in this environment; rules only";
+        else if (!("config" in ai)) aiNote = `AI not configured (${ai.missing.join("; ")}); rules only`;
         else if (!env.BUDGET_GATE) aiNote = "AI budget gate not configured; rules only";
         else extractor = makeOpenAiExtractor(ai.config, budgetClient(env.BUDGET_GATE));
       }

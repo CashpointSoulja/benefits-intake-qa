@@ -1,5 +1,7 @@
 # Test Results: Benefits Intake QA v0.1
 
+> Sections L1–L5 below were run against the v0.1 production build (`97fdd9a`) and still describe what is live. The section "PR #3: OpenAI replacement, local checks only" at the end lists the only tests run for the OpenAI change; none of it has run in production.
+
 **Author:** Ayo Ahmed. **Date:** September 27, 2026. **Plan:** [TEST_PLAN.md](TEST_PLAN.md)
 
 > Independent prototype by Ayo Ahmed, not affiliated with Euphoric. Synthetic data only.
@@ -62,3 +64,25 @@ All thresholds met.
 - **Real-world accuracy:** unmeasured. There are no real or held-out documents.
 - **Load/performance:** only the server-side `meta.ms` was observed (4–6 ms in rules mode via API). No load test.
 - **Deployment metadata:** content hashes match `main`, but the Cloudflare deployment ID was not checked.
+
+## PR #3: OpenAI replacement, local checks only
+**Scope:** branch `devin/1790547465-openai-budget-gate`. Run 2026-09-27 22:40 UTC, Node v24.19.0, Wrangler 4.142.0, Linux. **No OpenAI API key was used, no OpenAI request was made, and nothing was deployed.** Production still runs `97fdd9a` (rules-only; T10 above).
+
+| Command | Result |
+|---|---|
+| `npm run typecheck` | Pass (exit 0) |
+| `npm test` | Pass: 7 files, 56/56 tests |
+| `npm run eval` | Pass: all thresholds met (same 6 synthetic cases) |
+| `npx wrangler deploy --dry-run --outdir /tmp/wdry` | Pass: bindings `BUDGET_GATE` (Durable Object) and `ASSETS`; no upload |
+| `CI=true npx wrangler preview` | **Not run**: stops at "set a CLOUDFLARE_API_TOKEN" (this environment has no Cloudflare login) |
+
+What the new tests cover (all with fake `fetch` / local storage):
+- `test/openai.test.ts`: only the pinned model and prices are accepted; the request body has no tools, audio, web search or premium tier; the reservation happens before `fetch` and no `fetch` happens if it is refused; unknown usage, errors and an unexpected model or tier keep the full reservation; unsupported AI values stay `null`.
+- `test/budget.test.ts` (sequential, Node SQLite): $1.80 clamp, lower-only limit, settlement, over-reservation anomaly and halt, persistence across ledger instances.
+- `test/budget-do.test.ts` (**concurrent**, real `BudgetGate` in local Miniflare/workerd with SQLite): 200 simultaneous reservations grant exactly the affordable number; $1.80 clamp; anomaly halt; spend persists across a restart; a lowered limit can't be raised.
+- `test/tokenizer.test.ts`: the worst-case input bound (serialized request bytes + 64) is at least the token count measured by OpenAI's `tiktoken` 0.14.0 (`o200k_base`, which `tiktoken` maps to `gpt-5.4-nano`) plus chat overhead (3 per message + 3), for the four samples and eight 12,000-character adversarial inputs (digits/punctuation, random ASCII, CJK, emoji, combining marks, whitespace, JSON escapes). The tightest case is digits/punctuation: 12,171 tokens against 12,716 content bytes. The same script found that every ordinary `o200k_base` token is at least 1 byte, which is why bytes bound tokens.
+
+Not tested:
+- Any real OpenAI call, actual billed `usage`, or whether OpenAI adds hidden prompt tokens beyond the cookbook's formatting overhead. If a call ever reports more than was reserved, the ledger keeps the reservation and halts AI (tested with fakes only).
+- The Durable Object migration on Cloudflare, `wrangler preview`, and any production behaviour of the OpenAI path.
+- Per-visitor rate limiting (not built).

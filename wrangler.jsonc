@@ -17,6 +17,15 @@
   },
   "migrations": [{ "tag": "v1", "new_sqlite_classes": ["BudgetGate"] }],
   "keep_vars": true,
+  // Required by `wrangler preview` (PR preview builds). Each Preview gets a fresh BudgetGate
+  // namespace, i.e. a fresh $1.80 ledger, so AI is forced off there. Do not add OPENAI_API_KEY
+  // to the Previews base config.
+  "previews": {
+    "vars": { "AI_DISABLED": "preview" },
+    "durable_objects": {
+      "bindings": [{ "name": "BUDGET_GATE", "class_name": "BudgetGate" }]
+    }
+  },
   "observability": {
     "enabled": true
   }

@@ -101,13 +101,17 @@ export function buildMessages(text: string, maxChars: number) {
 }
 
 /**
- * Upper bound on cost in micro-USD. Every BPE token encodes at least one UTF-8 byte, so the
- * serialized request body's byte count bounds input tokens; output is capped by
- * max_completion_tokens, which also counts reasoning tokens.
+ * Upper bound on cost in micro-USD. Every ordinary o200k_base token decodes to at least one
+ * UTF-8 byte, so message bytes bound content tokens; the serialized body is larger still, and
+ * 64 more tokens cover chat formatting (3 per message + 3). Output is capped by
+ * max_completion_tokens, which also counts reasoning tokens. See test/tokenizer.test.ts.
  */
+export function worstCaseInputTokens(body: unknown): number {
+  return new TextEncoder().encode(JSON.stringify(body)).length + REQUEST_OVERHEAD_TOKENS;
+}
+
 export function worstCaseMicros(body: unknown, cfg: OpenAiConfig): number {
-  const inputTokens = new TextEncoder().encode(JSON.stringify(body)).length + REQUEST_OVERHEAD_TOKENS;
-  return Math.ceil(inputTokens * cfg.inputPrice + cfg.maxOutputTokens * cfg.outputPrice);
+  return Math.ceil(worstCaseInputTokens(body) * cfg.inputPrice + cfg.maxOutputTokens * cfg.outputPrice);
 }
 
 export function actualMicros(usage: unknown, cfg: OpenAiConfig): number | null {
