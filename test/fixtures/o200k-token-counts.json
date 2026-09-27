@@ -1,0 +1,140 @@
+{
+ "tiktoken_version": "0.14.0",
+ "model": "gpt-5.4-nano-2026-03-17",
+ "encoding": "o200k_base",
+ "min_bytes_per_ordinary_token": 1,
+ "cases": [
+  {
+   "id": "sample:clean-ppo",
+   "content_tokens": [
+    13,
+    354
+   ],
+   "content_bytes": [
+    64,
+    1317
+   ]
+  },
+  {
+   "id": "sample:messy-hdhp",
+   "content_tokens": [
+    13,
+    317
+   ],
+   "content_bytes": [
+    64,
+    1226
+   ]
+  },
+  {
+   "id": "sample:conflicting-values",
+   "content_tokens": [
+    13,
+    342
+   ],
+   "content_bytes": [
+    64,
+    1233
+   ]
+  },
+  {
+   "id": "sample:sparse-email",
+   "content_tokens": [
+    13,
+    223
+   ],
+   "content_bytes": [
+    64,
+    914
+   ]
+  },
+  {
+   "id": "max-ascii-letters",
+   "content_tokens": [
+    13,
+    1658
+   ],
+   "content_bytes": [
+    64,
+    12652
+   ]
+  },
+  {
+   "id": "max-digits-punct",
+   "content_tokens": [
+    13,
+    12158
+   ],
+   "content_bytes": [
+    64,
+    12652
+   ]
+  },
+  {
+   "id": "max-random-ascii",
+   "content_tokens": [
+    13,
+    9095
+   ],
+   "content_bytes": [
+    64,
+    12652
+   ]
+  },
+  {
+   "id": "max-cjk",
+   "content_tokens": [
+    13,
+    9976
+   ],
+   "content_bytes": [
+    64,
+    36652
+   ]
+  },
+  {
+   "id": "max-emoji",
+   "content_tokens": [
+    13,
+    12158
+   ],
+   "content_bytes": [
+    64,
+    24652
+   ]
+  },
+  {
+   "id": "max-combining",
+   "content_tokens": [
+    13,
+    12158
+   ],
+   "content_bytes": [
+    64,
+    18652
+   ]
+  },
+  {
+   "id": "max-whitespace-mix",
+   "content_tokens": [
+    13,
+    7358
+   ],
+   "content_bytes": [
+    64,
+    19852
+   ]
+  },
+  {
+   "id": "max-json-escapes",
+   "content_tokens": [
+    13,
+    9158
+   ],
+   "content_bytes": [
+    64,
+    12652
+   ]
+  }
+ ]
+}

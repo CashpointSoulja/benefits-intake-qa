@@ -11,7 +11,7 @@
 ## Known issues to fix before v2 work
 | Issue | Evidence | Fix, subject to verification |
 |---|---|---|
-| The configured Workers AI model (`@cf/meta/llama-3.1-8b-instruct`, served as `infire-llama-3.1-8b-instruct`, deprecated 2026-05-30) always fails, so production falls back to rules only | TEST_RESULTS T10 | Choose a current catalog model, then re-run the AI unit tests and a production spot-check before deploying |
+| The configured Workers AI model (`@cf/meta/llama-3.1-8b-instruct`, served as `infire-llama-3.1-8b-instruct`, deprecated 2026-05-30) always fails, so production falls back to rules only | TEST_RESULTS T10 | Replacement with OpenAI behind a lifetime budget gate is in PR #3 (not deployed). Before calling it fixed: merge, set `OPENAI_API_KEY`, `wrangler deploy`, then a supervised production spot-check within the $1.80 cap |
 | Accessibility: serious axe violations for colour contrast (orange step labels, source line numbers) and a scrollable `#source` region that can't take keyboard focus; moderate: content outside landmarks | TEST_RESULTS T11 | Darken the accent text, make `#source` focusable (`tabindex=0` plus a label), wrap the content in landmarks; re-run axe before deploying |
 
 ## Stages and gates

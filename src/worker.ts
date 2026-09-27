@@ -1,10 +1,16 @@
 import { analyze, recheck, type AiExtractor, type ReviewedField } from "./engine/analyze";
 import { FIELD_KEYS, type FieldKey, type FieldValue } from "./engine/types";
 import { SAMPLES } from "./samples";
+import { makeOpenAiExtractor, readOpenAiConfig, type BudgetClient, type OpenAiEnv } from "./ai/openai";
+import { BudgetGate, type BudgetEnv } from "./budget/gate";
 
-interface Env {
+export { BudgetGate };
+
+interface Env extends OpenAiEnv, BudgetEnv {
   ASSETS: Fetcher;
-  AI?: Ai;
+  BUDGET_GATE?: DurableObjectNamespace<BudgetGate>;
+  /** Any non-empty value forces rules only (set for Previews, which get their own empty ledger). */
+  AI_DISABLED?: string;
 }
 
 const MAX_CHARS = 60_000;
@@ -32,36 +38,19 @@ function parseReviewed(raw: unknown): Record<FieldKey, ReviewedField> | null {
   }
   return out;
 }
-const MODEL = "@cf/meta/llama-3.1-8b-instruct";
-
 const json = (data: unknown, status = 200) =>
   new Response(JSON.stringify(data), {
     status,
     headers: { "content-type": "application/json; charset=utf-8" },
   });
 
-function makeAiExtractor(ai: Ai): AiExtractor {
-  return async (text) => {
-    const prompt = `Extract these fields from a US group health benefits intake document. Return ONLY a JSON object whose keys are exactly: ${FIELD_KEYS.join(", ")}. Use null when a field is not stated. Money as plain numbers (no $), percents as numbers, dates as YYYY-MM-DD, plan_type as one of PPO/HMO/HDHP/EPO/POS, hsa_eligible as true/false, waiting_period_days as a number of days.\n\nDOCUMENT:\n${text.slice(0, 12_000)}`;
-    const res = (await ai.run(MODEL, {
-      messages: [
-        { role: "system", content: "You are a careful data-entry assistant. Output strict JSON only." },
-        { role: "user", content: prompt },
-      ],
-      max_tokens: 800,
-      temperature: 0,
-    })) as { response?: string };
-    const body = res.response ?? "";
-    const start = body.indexOf("{");
-    const end = body.lastIndexOf("}");
-    if (start < 0 || end < 0) throw new Error("model returned no JSON");
-    const parsed = JSON.parse(body.slice(start, end + 1)) as Record<string, unknown>;
-    const out: Partial<Record<FieldKey, FieldValue | null>> = {};
-    for (const k of FIELD_KEYS) {
-      const v = parsed[k];
-      if (typeof v === "string" || typeof v === "number" || typeof v === "boolean" || v === null) out[k] = v;
-    }
-    return out;
+const LIFETIME_BUDGET_ID = "lifetime";
+
+function budgetClient(ns: DurableObjectNamespace<BudgetGate>): BudgetClient {
+  const stub = ns.get(ns.idFromName(LIFETIME_BUDGET_ID));
+  return {
+    reserve: (amount) => stub.reserve(amount),
+    settle: (id, actual, anomaly) => stub.settle(id, actual, anomaly ?? null),
   };
 }
 
@@ -70,7 +59,12 @@ export default {
     const url = new URL(request.url);
 
     if (url.pathname === "/api/health") {
-      return json({ ok: true, ai_binding: Boolean(env.AI) });
+      const ai = readOpenAiConfig(env);
+      return json({
+        ok: true,
+        ai_provider: "openai",
+        ai_configured: !env.AI_DISABLED?.trim() && "config" in ai && Boolean(env.BUDGET_GATE),
+      });
     }
 
     if (url.pathname === "/api/samples" && request.method === "GET") {
@@ -102,9 +96,17 @@ export default {
       if (chars > MAX_CHARS) {
         return json({ error: `text exceeds ${MAX_CHARS} characters` }, 413);
       }
-      const useAi = body.use_ai === true && env.AI;
-      const result = await analyze(input, useAi ? makeAiExtractor(env.AI as Ai) : undefined);
-      if (body.use_ai === true && !env.AI) result.meta.ai_note = "AI binding not configured; rules only";
+      let extractor: AiExtractor | undefined;
+      let aiNote: string | undefined;
+      if (body.use_ai === true) {
+        const ai = readOpenAiConfig(env);
+        if (env.AI_DISABLED?.trim()) aiNote = "AI disabled in this environment; rules only";
+        else if (!("config" in ai)) aiNote = `AI not configured (${ai.missing.join("; ")}); rules only`;
+        else if (!env.BUDGET_GATE) aiNote = "AI budget gate not configured; rules only";
+        else extractor = makeOpenAiExtractor(ai.config, budgetClient(env.BUDGET_GATE));
+      }
+      const result = await analyze(input, extractor);
+      if (aiNote) result.meta.ai_note = aiNote;
       return json(result);
     }
 

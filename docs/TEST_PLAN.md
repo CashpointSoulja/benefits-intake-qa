@@ -45,7 +45,7 @@ This plan checks that the shipped prototype does what the [PRD](PRD.md) acceptan
 | T7 | P0 | AC10 | Download reviewed JSON | `schema: benefits-intake-qa/reviewed-plan@1`; `review.status` goes from `in_progress` to `complete`; `pages: 2`; the chosen page-2 quote; missing fields stay `null` |
 | T8 | P0 | Scope | Upload a scanned or image-only PDF | Clear "no text layer / OCR out of scope" error; previous results are cleared |
 | T9 | P1 | — | Edit the textarea after an analysis | Previous results and download are hidden (stale-result invalidation) |
-| T10 | P1 | AC6 | Tick "Add Workers AI second opinion" | Either AI runs with grounded values only, or rules-only with an `ai_note`. No errors either way |
+| T10 | P1 | AC6 | Tick the AI second-opinion box ("Add Workers AI second opinion" in the tested v0.1 build; "Add OpenAI second opinion" after PR #3) | Either AI runs with grounded values only, or rules-only with an `ai_note`. No errors either way |
 | T11 | P1 | — | Accessibility basics: keyboard-only tab order, visible focus, accessible names, image alt text, `<html lang>`, axe-core scan | No critical axe violations; every control reachable by keyboard |
 | T12 | P0 | — | Console and `/api/health` | No console errors; health returns 200 |
 

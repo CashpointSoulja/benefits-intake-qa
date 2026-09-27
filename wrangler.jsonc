@@ -7,10 +7,24 @@
     "directory": "./public",
     "binding": "ASSETS"
   },
-  // Workers AI is optional: the engine falls back to deterministic extraction when
-  // the binding is absent or the model call fails.
-  "ai": {
-    "binding": "AI"
+  // Optional OpenAI second opinion (pinned model and prices in src/ai/openai.ts). Every paid
+  // call first reserves its worst-case cost in the BudgetGate Durable Object: a lifetime cap of
+  // at most $1.80 that fails closed. Only OPENAI_API_KEY (a secret) is required.
+  // The ledger lives in BudgetGate's SQLite storage and survives deploys. Never add a
+  // deleted_classes / renamed_classes migration for BudgetGate: that would erase the spend record.
+  "durable_objects": {
+    "bindings": [{ "name": "BUDGET_GATE", "class_name": "BudgetGate" }]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["BudgetGate"] }],
+  "keep_vars": true,
+  // Required by `wrangler preview` (PR preview builds). Each Preview gets a fresh BudgetGate
+  // namespace, i.e. a fresh $1.80 ledger, so AI is forced off there. Do not add OPENAI_API_KEY
+  // to the Previews base config.
+  "previews": {
+    "vars": { "AI_DISABLED": "preview" },
+    "durable_objects": {
+      "bindings": [{ "name": "BUDGET_GATE", "class_name": "BudgetGate" }]
+    }
   },
   "observability": {
     "enabled": true
