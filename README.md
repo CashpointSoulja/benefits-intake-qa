@@ -4,13 +4,20 @@ A small tool that turns a benefits plan document into structured fields, links e
 
 > **Independent prototype by Ayo Ahmed, not affiliated with Euphoric.** This is a concept prepared for Euphoric. It is not Euphoric's product, and Euphoric has not endorsed it. The UI shows Euphoric's logo and screenshots from https://www.euphoric.global/, which are © Euphoric; see `public/brand/ATTRIBUTION.md`. All plan data is synthetic.
 
+- **Live demo:** https://benefits-intake-qa.ayomideahmedcp.workers.dev/
 - **Product requirements:** [docs/PRD.md](docs/PRD.md)
-- **Stack:** a Cloudflare Worker (TypeScript API) serves the static frontend from `public/`. An optional Cloudflare Workers AI binding provides an AI second opinion.
+- **PM evidence package:**
+  - [Test plan](docs/TEST_PLAN.md)
+  - [Test results](docs/TEST_RESULTS.md)
+  - [Role viability](docs/ROLE_VIABILITY.md) (demonstrated work vs. hypothetical customer need)
+  - [Roadmap](docs/ROADMAP.md) (gated v2)
+  - [Production demo video](demo/benefits-intake-qa-demo.mp4)
+- **Stack:** a Cloudflare Worker (TypeScript API) serves the static frontend from `public/`. An optional Cloudflare Workers AI binding is configured, but its current production model is deprecated; the app falls back to rules-only (see test results T10).
 
 ## What it does
 1. You drop or upload a text-based PDF, or paste text. pdf.js is served from the Worker's own assets (`public/vendor/pdfjs`) and extracts the text in the browser. Sample PDFs are in `public/samples/`.
 2. Deterministic extraction finds 18 plan fields. Each populated field records a verbatim quote, a page number, character offsets, and a `verified` flag. Missing fields are `null`. Contradictions keep every quote and page.
-3. Optionally, Workers AI gives a second opinion. It never overwrites a rule-extracted value. It fills a gap only when its value is located verbatim, with a page, in the source; otherwise the suggestion is reported as a finding and the field stays `null`.
+3. When a supported model is configured, Workers AI can give a second opinion; the current production model is deprecated and falls back to rules-only. It never overwrites a rule-extracted value. It fills a gap only when its value is located verbatim, with a page, in the source; otherwise the suggestion is reported as a finding and the field stays `null`.
 4. 11 QA checks run, covering missing fields, conflicts, family < individual, OOP < deductible, HSA/plan-type consistency, percentage plausibility, and dates. No jurisdiction- or plan-year-specific limits (ACA, HDHP, waiting period) are applied.
 5. The tool returns a disposition: **ready**, **needs review**, or **blocked**.
 6. The reviewer accepts or edits fields. The checks re-run on the reviewed values, and **Download reviewed JSON** exports values, review status, and provenance.
