@@ -7,11 +7,15 @@
     "directory": "./public",
     "binding": "ASSETS"
   },
-  // Workers AI is optional: the engine falls back to deterministic extraction when
-  // the binding is absent or the model call fails.
-  "ai": {
-    "binding": "AI"
+  // Optional OpenAI second opinion. Every paid call first reserves its worst-case cost in
+  // the BudgetGate Durable Object (lifetime cap, fail closed). Configure OPENAI_API_KEY as a
+  // secret and OPENAI_MODEL, OPENAI_INPUT_USD_PER_MTOK, OPENAI_OUTPUT_USD_PER_MTOK and
+  // AI_LIFETIME_BUDGET_USD as variables; if any is missing the app runs rules only.
+  "durable_objects": {
+    "bindings": [{ "name": "BUDGET_GATE", "class_name": "BudgetGate" }]
   },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["BudgetGate"] }],
+  "keep_vars": true,
   "observability": {
     "enabled": true
   }

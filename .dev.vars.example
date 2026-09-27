@@ -1,0 +1,8 @@
+# Copy to .dev.vars for `wrangler dev`. Never commit real keys.
+OPENAI_API_KEY=
+OPENAI_MODEL=
+# USD per 1M tokens, from the model's pricing page at the time you configure it.
+OPENAI_INPUT_USD_PER_MTOK=
+OPENAI_OUTPUT_USD_PER_MTOK=
+# Lifetime spend ceiling across all calls, e.g. 1.00. Can be lowered later, not raised.
+AI_LIFETIME_BUDGET_USD=
