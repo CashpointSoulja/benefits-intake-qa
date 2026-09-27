@@ -4,7 +4,14 @@ A small tool that turns a benefits plan document into structured fields, links e
 
 > **Independent prototype by Ayo Ahmed, not affiliated with Euphoric.** This is a concept prepared for Euphoric. It is not Euphoric's product, and Euphoric has not endorsed it. The UI shows Euphoric's logo and screenshots from https://www.euphoric.global/, which are © Euphoric; see `public/brand/ATTRIBUTION.md`. All plan data is synthetic.
 
+- **Live demo:** https://benefits-intake-qa.ayomideahmedcp.workers.dev/
 - **Product requirements:** [docs/PRD.md](docs/PRD.md)
+- **PM evidence package:**
+  - [Test plan](docs/TEST_PLAN.md)
+  - [Test results](docs/TEST_RESULTS.md)
+  - [Role viability](docs/ROLE_VIABILITY.md) (demonstrated work vs. hypothetical customer need)
+  - [Roadmap](docs/ROADMAP.md) (gated v2)
+  - [Production demo video](demo/benefits-intake-qa-demo.mp4)
 - **Stack:** a Cloudflare Worker (TypeScript API) serves the static frontend from `public/`. An optional Cloudflare Workers AI binding provides an AI second opinion.
 
 ## What it does
