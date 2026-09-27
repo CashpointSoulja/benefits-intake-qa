@@ -1,4 +1,4 @@
-import { extractFields, toPages } from "./extract";
+import { extractFields, locateValue, toPages } from "./extract";
 import { runChecks } from "./rules";
 import {
   FIELD_KEYS,
@@ -45,14 +45,20 @@ export async function analyze(input: string | string[], ai?: AiExtractor): Promi
       const guess = await ai(text);
       mode = "rules+ai";
       const filled: FieldKey[] = [];
+      const unsupported: string[] = [];
       const disagree: string[] = [];
       for (const k of FIELD_KEYS) {
         const g = guess[k];
         if (g === undefined || g === null || g === "") continue;
         const cur = extraction.fields[k];
         if (cur.value === null) {
-          extraction.fields[k] = { ...cur, value: g, confidence: 0.5, source: "ai" };
-          filled.push(k);
+          const evidence = locateValue(input, g);
+          if (evidence.length) {
+            extraction.fields[k] = { ...cur, value: g, confidence: 0.5, evidence, source: "ai" };
+            filled.push(k);
+          } else {
+            unsupported.push(`${k}=${JSON.stringify(g)}`);
+          }
         } else if (String(cur.value).toLowerCase() !== String(g).toLowerCase()) {
           extraction.fields[k] = { ...cur, source: "merged" };
           disagree.push(`${k}: rules=${String(cur.value)} ai=${String(g)}`);
@@ -61,10 +67,18 @@ export async function analyze(input: string | string[], ai?: AiExtractor): Promi
       if (filled.length)
         extra.push({
           code: "AI_FILLED_FIELD",
-          severity: "info",
-          message: `AI model supplied ${filled.length} field(s) the rules missed: ${filled.join(", ")}.`,
+          severity: "warning",
+          message: `AI model supplied ${filled.length} field(s) the rules missed, each located verbatim in the source: ${filled.join(", ")}.`,
           fields: filled,
-          action: "Verify these manually; model-supplied values have no line-level evidence.",
+          action: "Check each quote supports the field; the value was found in the text but the label was not parsed.",
+        });
+      if (unsupported.length)
+        extra.push({
+          code: "AI_SUGGESTION_UNSUPPORTED",
+          severity: "info",
+          message: `AI suggested value(s) that do not appear verbatim in the source, so they were not used: ${unsupported.join("; ")}.`,
+          fields: unsupported.map((u) => u.split("=")[0] as FieldKey),
+          action: "Treat as a hint only; the field stays null until a reviewer finds it in the document.",
         });
       if (disagree.length)
         extra.push({
@@ -72,7 +86,7 @@ export async function analyze(input: string | string[], ai?: AiExtractor): Promi
           severity: "warning",
           message: `AI model disagrees with rule extraction on ${disagree.length} field(s): ${disagree.join("; ")}.`,
           fields: disagree.map((d) => d.split(":")[0] as FieldKey),
-          action: "Check the source line; the rule value is kept until a reviewer confirms.",
+          action: "Check the source quote; the rule value is kept until a reviewer confirms.",
         });
     } catch (e) {
       ai_note = `AI unavailable, rules only (${e instanceof Error ? e.message : String(e)})`;

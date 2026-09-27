@@ -48,7 +48,7 @@
       "employer_contribution_pct": 75,
       "hsa_eligible": true
     },
-    "expected_findings": ["FAMILY_OOP_LT_INDIVIDUAL", "HDHP_DEDUCTIBLE_BELOW_MIN"],
+    "expected_findings": ["FAMILY_OOP_LT_INDIVIDUAL"],
     "expected_disposition": "blocked"
   },
   {
@@ -146,9 +146,7 @@
     },
     "expected_findings": [
       "RENEWAL_NOT_AFTER_EFFECTIVE",
-      "OOP_ABOVE_REFERENCE_LIMIT",
-      "COINSURANCE_LIKELY_INVERTED",
-      "WAITING_PERIOD_ABOVE_LIMIT"
+      "COINSURANCE_LIKELY_INVERTED"
     ],
     "expected_disposition": "blocked"
   }

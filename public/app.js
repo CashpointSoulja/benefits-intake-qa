@@ -212,7 +212,6 @@ function renderFindings(findings) {
 }
 
 function evidenceHtml(key, f) {
-  if (f.source === "ai" && f.evidence.length === 0) return `<li>AI-supplied value, no source quote. Verify manually.</li>`;
   if (f.evidence.length === 0) return `<li>Not found in the document (value is <code>null</code>).</li>`;
   return f.evidence
     .map((e, i) => `<li><span class="pg">p.${e.page} · line ${e.page_line}</span><q>${esc(e.quote)}</q>${

@@ -6,17 +6,6 @@ import {
   type Finding,
 } from "./types";
 
-/**
- * Illustrative reference limits used by plausibility checks. These are configuration,
- * not legal advice: a real implementation would load client- and plan-year-specific values.
- */
-export const REFERENCE_LIMITS = {
-  plan_year: 2025,
-  hdhp_min_deductible: { individual: 1650, family: 3300 },
-  aca_oop_max: { individual: 9200, family: 18400 },
-  max_waiting_period_days: 90,
-};
-
 const num = (ex: Extraction, k: FieldKey): number | null => {
   const v = ex.fields[k].value;
   return typeof v === "number" ? v : null;
@@ -56,7 +45,6 @@ export function runChecks(ex: Extraction): Finding[] {
   const oF = num(ex, "oop_max_family");
   const coins = num(ex, "coinsurance_pct");
   const contrib = num(ex, "employer_contribution_pct");
-  const wait = num(ex, "waiting_period_days");
   const planType = f.plan_type.value;
   const hsa = f.hsa_eligible.value;
 
@@ -93,40 +81,14 @@ export function runChecks(ex: Extraction): Finding[] {
       action: "Out-of-pocket max must be at least the deductible; confirm which figure is wrong.",
     });
 
-  const L = REFERENCE_LIMITS;
-  if (oI !== null && oI > L.aca_oop_max.individual)
-    out.push({
-      code: "OOP_ABOVE_REFERENCE_LIMIT",
-      severity: "warning",
-      message: `Individual OOP max ($${oI}) exceeds the ${L.plan_year} reference limit ($${L.aca_oop_max.individual}).`,
-      fields: ["oop_max_individual"],
-      action: "Confirm plan year and whether the plan is subject to the ACA limit.",
-    });
-  if (oF !== null && oF > L.aca_oop_max.family)
-    out.push({
-      code: "OOP_ABOVE_REFERENCE_LIMIT",
-      severity: "warning",
-      message: `Family OOP max ($${oF}) exceeds the ${L.plan_year} reference limit ($${L.aca_oop_max.family}).`,
-      fields: ["oop_max_family"],
-      action: "Confirm plan year and whether the plan is subject to the ACA limit.",
-    });
-
   const isHdhp = planType === "HDHP";
-  if (isHdhp && dI !== null && dI < L.hdhp_min_deductible.individual)
-    out.push({
-      code: "HDHP_DEDUCTIBLE_BELOW_MIN",
-      severity: "error",
-      message: `Plan is marked HDHP but individual deductible ($${dI}) is below the ${L.plan_year} HDHP minimum ($${L.hdhp_min_deductible.individual}).`,
-      fields: ["plan_type", "deductible_individual"],
-      action: "Either the plan type or the deductible is wrong; confirm with the carrier.",
-    });
   if (hsa === true && planType !== null && !isHdhp)
     out.push({
       code: "HSA_WITHOUT_HDHP",
-      severity: "error",
-      message: `Marked HSA-eligible but plan type is ${String(planType)}, not HDHP.`,
+      severity: "warning",
+      message: `The document marks the plan HSA-eligible but states plan type ${String(planType)}, not HDHP.`,
       fields: ["hsa_eligible", "plan_type"],
-      action: "HSA eligibility generally requires an HDHP; confirm plan type.",
+      action: "The two stated values disagree with each other; confirm plan type and HSA status with the carrier.",
     });
 
   if (coins !== null && (coins < 0 || coins > 100))
@@ -152,15 +114,6 @@ export function runChecks(ex: Extraction): Finding[] {
       message: `Employer contribution ${contrib}% is outside 0-100%.`,
       fields: ["employer_contribution_pct"],
       action: "Re-read the source document.",
-    });
-
-  if (wait !== null && wait > L.max_waiting_period_days)
-    out.push({
-      code: "WAITING_PERIOD_ABOVE_LIMIT",
-      severity: "warning",
-      message: `Waiting period of ${wait} days exceeds the ${L.max_waiting_period_days}-day reference maximum.`,
-      fields: ["waiting_period_days"],
-      action: "Confirm with the client; long waiting periods are often data-entry errors.",
     });
 
   const eff = f.effective_date.value;

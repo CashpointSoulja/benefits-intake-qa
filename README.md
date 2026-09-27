@@ -10,8 +10,8 @@ A small tool that turns a benefits plan document into structured fields, links e
 ## What it does
 1. You drop or upload a text-based PDF, or paste text. pdf.js is served from the Worker's own assets (`public/vendor/pdfjs`) and extracts the text in the browser. Sample PDFs are in `public/samples/`.
 2. Deterministic extraction finds 18 plan fields. Each populated field records a verbatim quote, a page number, character offsets, and a `verified` flag. Missing fields are `null`. Contradictions keep every quote and page.
-3. Optionally, Workers AI gives a second opinion. It can fill gaps or flag disagreements, but it never overwrites a rule-extracted value.
-4. 14 QA checks run, covering missing fields, conflicts, family < individual, OOP < deductible, HDHP/HSA consistency, reference limits, and dates.
+3. Optionally, Workers AI gives a second opinion. It never overwrites a rule-extracted value. It fills a gap only when its value is located verbatim, with a page, in the source; otherwise the suggestion is reported as a finding and the field stays `null`.
+4. 11 QA checks run, covering missing fields, conflicts, family < individual, OOP < deductible, HSA/plan-type consistency, percentage plausibility, and dates. No jurisdiction- or plan-year-specific limits (ACA, HDHP, waiting period) are applied.
 5. The tool returns a disposition: **ready**, **needs review**, or **blocked**.
 6. The reviewer accepts or edits fields. The checks re-run on the reviewed values, and **Download reviewed JSON** exports values, review status, and provenance.
 

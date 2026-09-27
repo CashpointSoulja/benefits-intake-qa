@@ -39,7 +39,7 @@ Turn each document into a correct plan record, find anything missing or contradi
 ### Their pain (hypothesised)
 - Re-keying values from PDFs and emails. Formats differ by carrier and broker.
 - Contradictions hidden across pages. One example is a rate sheet that disagrees with the summary.
-- Plausibility errors caught late, after load or even after enrolment. Examples: family deductible lower than individual, or an HDHP below the IRS minimum.
+- Plausibility errors caught late, after load or even after enrolment. Examples: family deductible lower than individual, or out-of-pocket max lower than the deductible.
 - AI-extracted values with no provenance, so the reviewer has to re-read the whole document to trust them.
 
 ## 4. Why this wedge matters
@@ -52,9 +52,10 @@ Turn each document into a correct plan record, find anything missing or contradi
 1. The analyst drops or uploads a text-based PDF (or a .txt file, or pasted text). pdf.js is served from our own Cloudflare Worker, not a third-party CDN. It extracts text in the browser page by page and groups it into visual lines by y-coordinate. Only the per-page text (`pages: string[]`) is sent to the API, so page boundaries are kept. A PDF with almost no extractable text is rejected as "scanned, OCR out of scope".
 2. **Deterministic extraction** runs over the text. Label-driven patterns produce 18 fields. Each populated field records a heuristic confidence and at least one evidence item: `{page, page_line, quote, start, end, snippet, value, verified}`. `quote` is the matched span copied character-for-character from the submitted text; matching is whitespace-insensitive, but the quote keeps the original whitespace. `verified` is true only when the quote is re-located at the stated page and offsets. A field not found is `value: null` with no evidence.
 3. **Optional AI second opinion** (Cloudflare Workers AI) proposes values. The AI never overwrites a rule value:
-   - It may fill a field the rules missed. The value is marked "AI, no evidence".
+   - It may fill a field the rules missed, but only when `locateValue()` finds the proposed value stated literally in the source. Numbers and dates are also matched in common reformattings, such as `1500` → "$1,500" and `2025-03-01` → "March 1, 2025". The field then gets the same verified `{page, quote, ...}` evidence as a rule value, `source: "ai"`, and an `AI_FILLED_FIELD` warning.
+   - A suggestion that cannot be located, including any boolean, is **not** stored as data. The field stays `null`, and the suggestion appears only in an `AI_SUGGESTION_UNSUPPORTED` finding.
    - Where it disagrees with a rule value, the disagreement becomes a warning.
-4. **QA checks** run: missing required fields, conflicting values, family < individual, OOP < deductible, reference limits (ACA OOP, HDHP minimum, 90-day waiting period), HSA without HDHP, inverted coinsurance, and date order.
+4. **QA checks** run: missing required fields, conflicting values, family < individual, OOP < deductible, HSA-eligible but a non-HDHP plan type, percentages outside 0–100, likely inverted coinsurance, date order, plan-year length, and low confidence. The demo has no established plan year or jurisdiction, so it applies **no** normative numeric limits (for example ACA OOP maximums, HDHP minimum deductibles, or waiting-period caps).
 5. The **reviewer checklist** lists each finding with severity, a message, and a recommended action. It ends with a disposition:
    - **blocked** if there is any error.
    - **needs review** if there is any warning.
@@ -69,7 +70,7 @@ Turn each document into a correct plan record, find anything missing or contradi
 - A fixed 18-field medical plan schema.
 - Page-aware, verbatim span evidence for every populated field, and conflict detection that shows every contradicting quote with its page.
 - Reviewer accept / edit / confirm-missing per field, a re-check after review, and a reviewed JSON download.
-- 14 rule-based QA checks with configurable reference limits.
+- 11 rule-based QA checks covering internal consistency, plausibility, missing and conflicting values, and dates.
 - An optional Workers AI second opinion that degrades safely.
 - A golden-set evaluation harness (`npm run eval`).
 - Hosting on a Cloudflare Worker with static assets.
@@ -80,7 +81,7 @@ Turn each document into a correct plan record, find anything missing or contradi
 - Persistence, auth, multi-user queues, and an audit trail.
 - Writing to any benefits administration system.
 - Real client or PII data. No real documents should be uploaded.
-- Legal or compliance determinations. Reference limits are illustrative only.
+- Legal or compliance determinations, including jurisdiction- or plan-year-specific limits (ACA, IRS HDHP, waiting-period rules).
 
 ## 7. User stories
 1. As an analyst, I can paste or upload a plan document and see structured fields within a few seconds.
@@ -94,10 +95,10 @@ Turn each document into a correct plan record, find anything missing or contradi
 
 ## 8. Acceptance criteria
 - AC1: With the clean sample, all 18 fields are extracted, there are zero findings, and the disposition is `ready`.
-- AC2: Every non-AI populated field has at least one evidence item with `page`, and an exact `quote` where `snippet.slice(start, end) === quote`, the quote appears on the stated page of the input, and `verified: true`. Missing fields are `null` with no evidence (`test/provenance.test.ts`).
+- AC2: Every populated field, whether from rules or AI, has at least one evidence item with `page`, and an exact `quote` where `snippet.slice(start, end) === quote`, the quote appears on the stated page of the input, and `verified: true`. Missing fields are `null` with no evidence (`test/provenance.test.ts`).
 - AC3: A field found with two different values yields `CONFLICTING_VALUES` (error). The UI and JSON show both quotes with their pages (for the conflicting sample PDF: p.1 "$500" vs p.2 "$750").
-- AC4: The messy HDHP sample yields `FAMILY_OOP_LT_INDIVIDUAL` and `HDHP_DEDUCTIBLE_BELOW_MIN`, and the disposition is `blocked`.
-- AC5: AI-supplied values never overwrite rule values. They show `source: ai`, and disagreements appear as `AI_DISAGREES`.
+- AC4: The messy HDHP sample yields `FAMILY_OOP_LT_INDIVIDUAL`, and the disposition is `blocked`. No ACA/HDHP/waiting-period limit findings are produced for any input.
+- AC5: AI-supplied values never overwrite rule values, and disagreements appear as `AI_DISAGREES`. An AI value is stored only with a verified quote and page (`source: ai`). Otherwise the field stays `null` and the suggestion appears only in `AI_SUGGESTION_UNSUPPORTED`.
 - AC6: If the AI call throws, the response is still 200 with `mode: rules` and an `ai_note`.
 - AC7: `npm run eval` exits non-zero if any threshold in §9 is breached.
 - AC8: The UI shows the independence disclaimer ("Independent prototype by Ayo Ahmed, not affiliated with Euphoric") and Euphoric asset attribution on every page load.
@@ -134,8 +135,9 @@ Turn each document into a correct plan record, find anything missing or contradi
 | Risk | Mitigation |
 |---|---|
 | The rules overfit the synthetic golden set | Use a held-out set (§10.2) and track real override rates |
-| An AI hallucination gets loaded as fact | AI never overwrites. AI-only values are labelled and generate a finding |
-| Reference limits change yearly or vary by jurisdiction | Keep limits in config (`REFERENCE_LIMITS`), versioned by plan year |
+| An AI hallucination gets loaded as fact | AI never overwrites. An AI value is kept only if its literal text is located on a page; otherwise it is only a finding |
+| A coincidental literal match grounds a wrong AI value | AI-filled fields raise a warning (`needs_review`) and show the quote so the reviewer can reject it |
+| Normative limits (ACA, IRS HDHP, waiting periods) vary by year and jurisdiction | Not applied in v0.1. They can be added later as configuration keyed by jurisdiction and plan year, once those are captured as fields |
 | Real PII gets uploaded to a demo | Show a disclaimer, persist nothing, and ship synthetic samples only |
 | PDF text order is lost (columns, tables) | Group PDF text into lines by y-coordinate. Out of scope: table recovery and OCR |
 | Readers mistake this for Euphoric's product, or the use of Euphoric's logo and screenshots is objected to | Keep the non-affiliation disclaimer and © Euphoric attribution in the UI, README, PRD and `public/brand/ATTRIBUTION.md`. Assets are isolated in `public/brand/` and can be removed quickly if Euphoric asks |

@@ -344,3 +344,62 @@ export function extractFields(input: string | string[]): Extraction {
     lines: lines.map(({ page, page_line, text }) => ({ page, page_line, text })),
   };
 }
+
+const esc = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+function valuePattern(value: FieldValue): RegExp | null {
+  if (typeof value === "boolean") return null;
+  if (typeof value === "number") {
+    if (!Number.isFinite(value) || value < 0) return null;
+    const plain = String(value);
+    const grouped = value.toLocaleString("en-US", { maximumFractionDigits: 2 });
+    const alts = [...new Set([grouped, plain].map(esc))].join("|");
+    return new RegExp(String.raw`(?<![\d.,])\$?\s?(?:${alts})(?:\.00)?\s?%?(?![\d,]*\d)`);
+  }
+  const iso = value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (iso) {
+    const [y, m, d] = [iso[1], +iso[2], +iso[3]];
+    const mon = MONTH_NAMES[m - 1];
+    if (!mon) return null;
+    const alts = [
+      esc(value),
+      String.raw`0?${m}[\/-]0?${d}[\/-](?:${y}|${y.slice(2)})(?!\d)`,
+      String.raw`${mon.slice(0, 3)}[a-z]*\.?\s+0?${d},?\s+${y}`,
+    ];
+    return new RegExp(String.raw`(?<!\d)(?:${alts.join("|")})`, "i");
+  }
+  const words = value.trim().split(/\s+/).filter(Boolean);
+  if (!words.length) return null;
+  return new RegExp(String.raw`(?<![A-Za-z0-9])${words.map(esc).join(String.raw`\s+`)}(?![A-Za-z0-9])`, "i");
+}
+
+/**
+ * Find verbatim spans in the source that literally state a proposed value (e.g. an AI suggestion).
+ * Returns verified evidence only; an empty array means the value cannot be grounded in the document.
+ */
+export function locateValue(input: string | string[], value: FieldValue): Evidence[] {
+  const re = valuePattern(value);
+  if (!re) return [];
+  const out: Evidence[] = [];
+  splitSource(input).forEach((line, i) => {
+    const m = line.text.match(re);
+    if (!m || m.index === undefined) return;
+    const quote = m[0].trim();
+    const start = m.index + m[0].indexOf(quote);
+    const ev: Evidence = {
+      page: line.page,
+      page_line: line.page_line,
+      line: i,
+      quote,
+      start,
+      end: start + quote.length,
+      snippet: line.text,
+      value,
+      verified: false,
+    };
+    ev.verified = verifyEvidence(input, ev);
+    if (ev.verified) out.push(ev);
+  });
+  return out;
+}

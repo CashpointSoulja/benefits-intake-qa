@@ -20,7 +20,7 @@ describe("itemsToLines", () => {
 describe("PDF intake end-to-end (sample PDFs → text → analysis)", () => {
   const cases: [string, "ready" | "blocked", string[]][] = [
     ["clean-ppo", "ready", []],
-    ["messy-hdhp", "blocked", ["FAMILY_OOP_LT_INDIVIDUAL", "HDHP_DEDUCTIBLE_BELOW_MIN"]],
+    ["messy-hdhp", "blocked", ["FAMILY_OOP_LT_INDIVIDUAL"]],
     ["conflicting-values", "blocked", ["CONFLICTING_VALUES", "MISSING_REQUIRED"]],
     ["sparse-email", "blocked", ["MISSING_REQUIRED"]],
   ];
