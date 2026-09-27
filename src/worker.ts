@@ -48,7 +48,7 @@ function budgetClient(ns: DurableObjectNamespace<BudgetGate>): BudgetClient {
   const stub = ns.get(ns.idFromName(LIFETIME_BUDGET_ID));
   return {
     reserve: (amount) => stub.reserve(amount),
-    settle: (id, actual) => stub.settle(id, actual),
+    settle: (id, actual, anomaly) => stub.settle(id, actual, anomaly ?? null),
   };
 }
 
@@ -94,7 +94,7 @@ export default {
       let aiNote: string | undefined;
       if (body.use_ai === true) {
         const ai = readOpenAiConfig(env);
-        if (!("config" in ai)) aiNote = `AI not configured (missing ${ai.missing.join(", ")}); rules only`;
+        if (!("config" in ai)) aiNote = `AI not configured (${ai.missing.join("; ")}); rules only`;
         else if (!env.BUDGET_GATE) aiNote = "AI budget gate not configured; rules only";
         else extractor = makeOpenAiExtractor(ai.config, budgetClient(env.BUDGET_GATE));
       }

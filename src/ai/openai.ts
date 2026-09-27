@@ -4,6 +4,17 @@ import type { ReserveResult } from "../budget/ledger";
 
 export const OPENAI_CHAT_URL = "https://api.openai.com/v1/chat/completions";
 
+/**
+ * The only model this Worker will call. Rates are official GPT-5.4 nano standard-tier prices
+ * per 1M tokens (input $0.20, output $1.25) observed on 2026-09-27 at
+ * https://platform.openai.com/docs/models/gpt-5.4-nano, raised by the 10% regional-processing
+ * uplift stated there, with no cached-input discount. A provider price rise requires changing
+ * these constants in reviewed code.
+ */
+export const PINNED_MODEL = "gpt-5.4-nano-2026-03-17";
+export const PINNED_INPUT_USD_PER_MTOK = 0.22;
+export const PINNED_OUTPUT_USD_PER_MTOK = 1.375;
+
 export interface OpenAiEnv {
   OPENAI_API_KEY?: string;
   OPENAI_MODEL?: string;
@@ -13,7 +24,7 @@ export interface OpenAiEnv {
 
 export interface OpenAiConfig {
   apiKey: string;
-  model: string;
+  model: typeof PINNED_MODEL;
   /** USD per 1M tokens; tokens × this = micro-USD. */
   inputPrice: number;
   outputPrice: number;
@@ -24,40 +35,60 @@ export interface OpenAiConfig {
 
 export interface BudgetClient {
   reserve(amountMicros: number): Promise<ReserveResult>;
-  settle(id: string, actualMicros: number | null): Promise<unknown>;
+  settle(id: string, actualMicros: number | null, anomaly?: string | null): Promise<unknown>;
 }
 
 export const MAX_OUTPUT_TOKENS = 800;
 export const MAX_INPUT_CHARS = 12_000;
 const REQUEST_OVERHEAD_TOKENS = 64;
 
-const price = (s: string | undefined) => {
-  if (s === undefined || !/^\d+(\.\d+)?$/.test(s.trim())) return null;
-  const n = Number(s.trim());
-  return n > 0 && Number.isFinite(n) ? n : null;
-};
+/** Optional override that may only raise a pinned price, never lower it. */
+function priceAtLeast(raw: string | undefined, floor: number): number | null {
+  if (raw === undefined || raw.trim() === "") return floor;
+  if (!/^\d+(\.\d+)?$/.test(raw.trim())) return null;
+  const n = Number(raw.trim());
+  return Number.isFinite(n) && n >= floor ? n : null;
+}
 
-/** All of key, model and both prices are required; anything missing disables AI (fail closed). */
+/** Key required; model may only be the pinned snapshot; prices may not go below the pins. */
 export function readOpenAiConfig(env: OpenAiEnv): { config: OpenAiConfig } | { missing: string[] } {
-  const inputPrice = price(env.OPENAI_INPUT_USD_PER_MTOK);
-  const outputPrice = price(env.OPENAI_OUTPUT_USD_PER_MTOK);
+  const inputPrice = priceAtLeast(env.OPENAI_INPUT_USD_PER_MTOK, PINNED_INPUT_USD_PER_MTOK);
+  const outputPrice = priceAtLeast(env.OPENAI_OUTPUT_USD_PER_MTOK, PINNED_OUTPUT_USD_PER_MTOK);
+  const model = env.OPENAI_MODEL?.trim();
   const missing = [
     !env.OPENAI_API_KEY?.trim() && "OPENAI_API_KEY",
-    !env.OPENAI_MODEL?.trim() && "OPENAI_MODEL",
-    inputPrice === null && "OPENAI_INPUT_USD_PER_MTOK",
-    outputPrice === null && "OPENAI_OUTPUT_USD_PER_MTOK",
+    model && model !== PINNED_MODEL && `OPENAI_MODEL (only ${PINNED_MODEL} is allowed)`,
+    inputPrice === null && `OPENAI_INPUT_USD_PER_MTOK (must be >= ${PINNED_INPUT_USD_PER_MTOK})`,
+    outputPrice === null && `OPENAI_OUTPUT_USD_PER_MTOK (must be >= ${PINNED_OUTPUT_USD_PER_MTOK})`,
   ].filter((m): m is string => Boolean(m));
   if (missing.length || inputPrice === null || outputPrice === null) return { missing };
   return {
     config: {
       apiKey: env.OPENAI_API_KEY!.trim(),
-      model: env.OPENAI_MODEL!.trim(),
+      model: PINNED_MODEL,
       inputPrice,
       outputPrice,
       maxOutputTokens: MAX_OUTPUT_TOKENS,
       maxInputChars: MAX_INPUT_CHARS,
       timeoutMs: 20_000,
     },
+  };
+}
+
+/**
+ * The complete request body. No tools, web search, audio or image output, a single choice and
+ * the standard service tier, so the pinned text-token rates are the only charges.
+ */
+export function buildRequestBody(messages: unknown, cfg: OpenAiConfig) {
+  return {
+    model: cfg.model,
+    messages,
+    n: 1,
+    max_completion_tokens: cfg.maxOutputTokens,
+    reasoning_effort: "none",
+    service_tier: "default",
+    response_format: { type: "json_object" },
+    store: false,
   };
 }
 
@@ -71,11 +102,11 @@ export function buildMessages(text: string, maxChars: number) {
 
 /**
  * Upper bound on cost in micro-USD. Every BPE token encodes at least one UTF-8 byte, so the
- * serialized message byte count bounds input tokens; output is capped by max_completion_tokens,
- * which also counts reasoning tokens.
+ * serialized request body's byte count bounds input tokens; output is capped by
+ * max_completion_tokens, which also counts reasoning tokens.
  */
-export function worstCaseMicros(messages: unknown, cfg: OpenAiConfig): number {
-  const inputTokens = new TextEncoder().encode(JSON.stringify(messages)).length + REQUEST_OVERHEAD_TOKENS;
+export function worstCaseMicros(body: unknown, cfg: OpenAiConfig): number {
+  const inputTokens = new TextEncoder().encode(JSON.stringify(body)).length + REQUEST_OVERHEAD_TOKENS;
   return Math.ceil(inputTokens * cfg.inputPrice + cfg.maxOutputTokens * cfg.outputPrice);
 }
 
@@ -83,8 +114,17 @@ export function actualMicros(usage: unknown, cfg: OpenAiConfig): number | null {
   if (typeof usage !== "object" || usage === null) return null;
   const u = usage as { prompt_tokens?: unknown; completion_tokens?: unknown };
   if (typeof u.prompt_tokens !== "number" || typeof u.completion_tokens !== "number") return null;
+  if (!Number.isSafeInteger(u.prompt_tokens) || !Number.isSafeInteger(u.completion_tokens)) return null;
   if (u.prompt_tokens < 0 || u.completion_tokens < 0) return null;
   return Math.ceil(u.prompt_tokens * cfg.inputPrice + u.completion_tokens * cfg.outputPrice);
+}
+
+/** Anything suggesting billing outside the pinned rates. */
+export function responseAnomaly(data: { model?: unknown; service_tier?: unknown }, cfg: OpenAiConfig): string | null {
+  if (data.service_tier !== undefined && data.service_tier !== null && data.service_tier !== "default")
+    return `unexpected_service_tier:${String(data.service_tier)}`;
+  if (typeof data.model === "string" && data.model !== cfg.model) return `unexpected_model:${data.model}`;
+  return null;
 }
 
 function parseFields(content: string): Partial<Record<FieldKey, FieldValue | null>> {
@@ -103,31 +143,33 @@ function parseFields(content: string): Partial<Record<FieldKey, FieldValue | nul
 /** No request is sent unless the budget gate first reserves the call's worst-case cost. */
 export function makeOpenAiExtractor(cfg: OpenAiConfig, budget: BudgetClient, fetchFn: typeof fetch = fetch): AiExtractor {
   return async (text) => {
-    const messages = buildMessages(text, cfg.maxInputChars);
-    const reservation = await budget.reserve(worstCaseMicros(messages, cfg));
+    const body = buildRequestBody(buildMessages(text, cfg.maxInputChars), cfg);
+    const reservation = await budget.reserve(worstCaseMicros(body, cfg));
     if (!reservation.ok) throw new Error(`AI budget gate refused the call: ${reservation.reason}`);
     let actual: number | null = null;
+    let anomaly: string | null = null;
     try {
       const res = await fetchFn(OPENAI_CHAT_URL, {
         method: "POST",
         headers: { authorization: `Bearer ${cfg.apiKey}`, "content-type": "application/json" },
-        body: JSON.stringify({
-          model: cfg.model,
-          messages,
-          max_completion_tokens: cfg.maxOutputTokens,
-          response_format: { type: "json_object" },
-          store: false,
-        }),
+        body: JSON.stringify(body),
         signal: AbortSignal.timeout(cfg.timeoutMs),
       });
       if (!res.ok) throw new Error(`OpenAI HTTP ${res.status}`);
-      const data = (await res.json()) as { usage?: unknown; choices?: { message?: { content?: unknown } }[] };
-      actual = actualMicros(data.usage, cfg);
+      const data = (await res.json()) as {
+        model?: unknown;
+        service_tier?: unknown;
+        usage?: unknown;
+        choices?: { message?: { content?: unknown } }[];
+      };
+      anomaly = responseAnomaly(data, cfg);
+      actual = anomaly ? null : actualMicros(data.usage, cfg);
+      if (anomaly) throw new Error(`OpenAI response outside pinned billing (${anomaly})`);
       const content = data.choices?.[0]?.message?.content;
       if (typeof content !== "string") throw new Error("model returned no content");
       return parseFields(content);
     } finally {
-      await budget.settle(reservation.id, actual);
+      await budget.settle(reservation.id, actual, anomaly);
     }
   };
 }

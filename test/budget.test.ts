@@ -1,6 +1,6 @@
 import { DatabaseSync } from "node:sqlite";
 import { describe, expect, it } from "vitest";
-import { BudgetLedger, usdToMicros, type SqlBinding, type SqlCell, type SqlLike, type Transact } from "../src/budget/ledger";
+import { BudgetLedger, LIFETIME_CAP_MICROS, usdToMicros, type SqlBinding, type SqlCell, type SqlLike, type Transact } from "../src/budget/ledger";
 
 function sqlite(db = new DatabaseSync(":memory:")) {
   const sql: SqlLike = {
@@ -27,11 +27,13 @@ describe("usdToMicros", () => {
   it("parses plain decimal USD and rejects anything else", () => {
     expect(usdToMicros("1.00")).toBe(1_000_000);
     expect(usdToMicros("0.000001")).toBe(1);
-    for (const bad of [undefined, "", "-1", "0", "1e3", "abc", "1.0000001", "$1"]) expect(usdToMicros(bad)).toBeNull();
+    expect(usdToMicros(undefined)).toBeUndefined();
+    expect(usdToMicros(" ")).toBeUndefined();
+    for (const bad of ["-1", "0", "1e3", "abc", "1.0000001", "$1"]) expect(usdToMicros(bad)).toBeNull();
   });
 });
 
-describe("BudgetLedger", () => {
+describe("BudgetLedger (sequential calls on one SQLite connection; concurrency is in budget-do.test.ts)", () => {
   it("reserves up to the limit and refuses the call that would exceed it", () => {
     const l = sqlite().ledger();
     expect(l.reserve(1000, 400, "a", 0)).toMatchObject({ ok: true, committed: 400 });
@@ -43,7 +45,7 @@ describe("BudgetLedger", () => {
     const l = sqlite().ledger();
     const r = l.reserve(1000, 900, "a", 0);
     expect(r.ok).toBe(true);
-    expect(l.settle("a", 100, 1)).toEqual({ id: "a", charged: 100, committed: 100 });
+    expect(l.settle("a", 100, 1)).toEqual({ id: "a", charged: 100, committed: 100, anomaly: null });
     expect(l.reserve(1000, 900, "b", 2).ok).toBe(true);
   });
 
@@ -52,7 +54,7 @@ describe("BudgetLedger", () => {
     l.reserve(1000, 700, "a", 0);
     l.reserve(1000, 300, "b", 0);
     expect(l.settle("a", null, 1).charged).toBe(700);
-    expect(l.status(1000)).toEqual({ limit: 1000, committed: 1000, remaining: 0, open_reservations: 1 });
+    expect(l.status(1000)).toEqual({ limit: 1000, committed: 1000, remaining: 0, open_reservations: 1, anomalies: 0 });
     expect(l.reserve(1000, 1, "c", 2).ok).toBe(false);
   });
 
@@ -75,9 +77,33 @@ describe("BudgetLedger", () => {
     const l = sqlite().ledger();
     l.reserve(1000, 800, "a", 0);
     expect(l.reserve(5000, 300, "b", 0)).toMatchObject({ ok: false, limit: 1000 });
-    expect(l.reserve(null, 100, "c", 0)).toMatchObject({ ok: true, limit: 1000 });
+    expect(l.reserve(undefined, 100, "c", 0)).toMatchObject({ ok: true, limit: 1000 });
     expect(l.reserve(500, 1, "d", 0)).toMatchObject({ ok: false, limit: 500 });
     expect(l.reserve(1000, 1, "e", 0)).toMatchObject({ ok: false, limit: 500 });
+  });
+
+  it("clamps every limit to the $1.80 code cap, including when unset", () => {
+    expect(LIFETIME_CAP_MICROS).toBe(1_800_000);
+    const a = sqlite().ledger();
+    expect(a.reserve(5_000_000, 1_800_001, "a", 0)).toMatchObject({ ok: false, reason: "budget_exhausted", limit: 1_800_000 });
+    expect(sqlite().ledger().status(undefined).limit).toBe(1_800_000);
+  });
+
+  it("never credits unused reserve when the reported cost exceeds it; flags and halts", () => {
+    const l = sqlite().ledger();
+    l.reserve(1000, 600, "a", 0);
+    l.reserve(1000, 300, "b", 0);
+    expect(l.settle("a", 5000, 1)).toEqual({ id: "a", charged: 600, committed: 900, anomaly: "actual_exceeds_reservation" });
+    expect(l.status(1000)).toMatchObject({ committed: 900, anomalies: 1 });
+    expect(l.reserve(1000, 1, "c", 2)).toMatchObject({ ok: false, reason: "anomaly_halt" });
+    expect(l.settle("b", 10, 3).anomaly).toBeNull();
+  });
+
+  it("a caller-reported anomaly keeps the full reservation and halts", () => {
+    const l = sqlite().ledger();
+    l.reserve(1000, 500, "a", 0);
+    expect(l.settle("a", 10, 1, "unexpected_service_tier:priority")).toMatchObject({ charged: 500, anomaly: "unexpected_service_tier:priority" });
+    expect(l.reserve(1000, 1, "b", 2)).toMatchObject({ ok: false, reason: "anomaly_halt" });
   });
 
   it("persists spend across ledger instances on the same database", () => {

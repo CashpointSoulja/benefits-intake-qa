@@ -1,8 +1,9 @@
 # Copy to .dev.vars for `wrangler dev`. Never commit real keys.
 OPENAI_API_KEY=
+# Optional. Only gpt-5.4-nano-2026-03-17 is accepted; anything else disables AI.
 OPENAI_MODEL=
-# USD per 1M tokens, from the model's pricing page at the time you configure it.
+# Optional. Pinned in src/ai/openai.ts; overrides may only raise these prices.
 OPENAI_INPUT_USD_PER_MTOK=
 OPENAI_OUTPUT_USD_PER_MTOK=
-# Lifetime spend ceiling across all calls, e.g. 1.00. Can be lowered later, not raised.
+# Optional. Lifetime spend ceiling; clamped to the $1.80 code cap. Can be lowered, never raised.
 AI_LIFETIME_BUDGET_USD=

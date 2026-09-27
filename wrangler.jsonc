@@ -7,10 +7,11 @@
     "directory": "./public",
     "binding": "ASSETS"
   },
-  // Optional OpenAI second opinion. Every paid call first reserves its worst-case cost in
-  // the BudgetGate Durable Object (lifetime cap, fail closed). Configure OPENAI_API_KEY as a
-  // secret and OPENAI_MODEL, OPENAI_INPUT_USD_PER_MTOK, OPENAI_OUTPUT_USD_PER_MTOK and
-  // AI_LIFETIME_BUDGET_USD as variables; if any is missing the app runs rules only.
+  // Optional OpenAI second opinion (pinned model and prices in src/ai/openai.ts). Every paid
+  // call first reserves its worst-case cost in the BudgetGate Durable Object: a lifetime cap of
+  // at most $1.80 that fails closed. Only OPENAI_API_KEY (a secret) is required.
+  // The ledger lives in BudgetGate's SQLite storage and survives deploys. Never add a
+  // deleted_classes / renamed_classes migration for BudgetGate: that would erase the spend record.
   "durable_objects": {
     "bindings": [{ "name": "BUDGET_GATE", "class_name": "BudgetGate" }]
   },

@@ -17,7 +17,7 @@ export class BudgetGate extends DurableObject<BudgetEnv> {
     this.ledger = new BudgetLedger(ctx.storage.sql, (fn) => ctx.storage.transactionSync(fn));
   }
 
-  private limit(): number | null {
+  private limit(): number | null | undefined {
     return usdToMicros(this.env.AI_LIFETIME_BUDGET_USD);
   }
 
@@ -25,8 +25,8 @@ export class BudgetGate extends DurableObject<BudgetEnv> {
     return this.ledger.reserve(this.limit(), amountMicros, crypto.randomUUID(), Date.now());
   }
 
-  settle(id: string, actualMicros: number | null): SettleResult {
-    return this.ledger.settle(id, actualMicros, Date.now());
+  settle(id: string, actualMicros: number | null, anomaly: string | null = null): SettleResult {
+    return this.ledger.settle(id, actualMicros, Date.now(), anomaly);
   }
 
   status(): BudgetStatus {
