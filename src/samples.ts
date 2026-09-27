@@ -78,8 +78,7 @@ Out-of-pocket max (individual): $4,000
 Out-of-pocket max (family): $8,000
 Coinsurance: 10%
 Emergency Room: $300 copay
-
-Page 2 of 2 — Rate Sheet Notes
+\fPage 2 of 2 — Rate Sheet Notes
 Deductible (individual): $750
 Deductible (family): $1,500
 Emergency room copay $150

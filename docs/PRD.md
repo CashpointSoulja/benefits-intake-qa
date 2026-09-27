@@ -49,8 +49,8 @@ Turn each document into a correct plan record, find anything missing or contradi
 - **Human-in-the-loop by design.** The tool supports the reviewer's decision instead of replacing it, which fits a regulated, high-trust domain.
 
 ## 5. Workflow
-1. The analyst drops or uploads a text-based PDF (or a .txt file, or pasted text). pdf.js is served from our own Cloudflare Worker, not a third-party CDN. It extracts text in the browser and groups it into visual lines by y-coordinate. Only the text is sent to the API. A PDF with almost no extractable text is rejected as "scanned, OCR out of scope".
-2. **Deterministic extraction** runs over the text. Label-driven patterns produce 18 fields, and each field records its source line(s) and a heuristic confidence.
+1. The analyst drops or uploads a text-based PDF (or a .txt file, or pasted text). pdf.js is served from our own Cloudflare Worker, not a third-party CDN. It extracts text in the browser page by page and groups it into visual lines by y-coordinate. Only the per-page text (`pages: string[]`) is sent to the API, so page boundaries are kept. A PDF with almost no extractable text is rejected as "scanned, OCR out of scope".
+2. **Deterministic extraction** runs over the text. Label-driven patterns produce 18 fields. Each populated field records a heuristic confidence and at least one evidence item: `{page, page_line, quote, start, end, snippet, value, verified}`. `quote` is the matched span copied character-for-character from the submitted text; matching is whitespace-insensitive, but the quote keeps the original whitespace. `verified` is true only when the quote is re-located at the stated page and offsets. A field not found is `value: null` with no evidence.
 3. **Optional AI second opinion** (Cloudflare Workers AI) proposes values. The AI never overwrites a rule value:
    - It may fill a field the rules missed. The value is marked "AI, no evidence".
    - Where it disagrees with a rule value, the disagreement becomes a warning.
@@ -59,13 +59,16 @@ Turn each document into a correct plan record, find anything missing or contradi
    - **blocked** if there is any error.
    - **needs review** if there is any warning.
    - **ready** otherwise.
-6. The reviewer clicks a finding or field to highlight its evidence in the source, then resolves it with the client.
+6. The reviewer clicks a finding or field to highlight the exact quote(s) in the page-labelled source. For a contradiction, every quote is shown with its page and value, and the reviewer picks one ("Use this").
+7. The reviewer **accepts** or **edits** each value, or confirms a missing field as null. After each change, `POST /api/recheck` re-runs the QA checks on the reviewed values and shows an "after review" disposition.
+8. The reviewer **downloads reviewed JSON** (`benefits-intake-qa/reviewed-plan@1`). It contains, per field: `value` (null if missing), `review_status` (`pending` / `accepted` / `edited`), `extracted_value`, `page`, `quote`, all evidence, and conflicts. It also records the review status (`in_progress` / `complete`) and both the extracted and the reviewed dispositions.
 
 ## 6. Scope
 **In scope (v0.1)**
 - Single-document analysis of text-based PDFs, .txt files, or pasted text. Four synthetic sample PDFs are included in `public/samples/`.
 - A fixed 18-field medical plan schema.
-- Line-level evidence and conflict detection.
+- Page-aware, verbatim span evidence for every populated field, and conflict detection that shows every contradicting quote with its page.
+- Reviewer accept / edit / confirm-missing per field, a re-check after review, and a reviewed JSON download.
 - 14 rule-based QA checks with configurable reference limits.
 - An optional Workers AI second opinion that degrades safely.
 - A golden-set evaluation harness (`npm run eval`).
@@ -81,23 +84,25 @@ Turn each document into a correct plan record, find anything missing or contradi
 
 ## 7. User stories
 1. As an analyst, I can paste or upload a plan document and see structured fields within a few seconds.
-2. As an analyst, I can click any extracted value and see the exact source line it came from.
+2. As an analyst, I can see, for every extracted value, the exact quote and PDF page it came from.
 3. As an analyst, I am told when the document states the same field with different values, and the tool does not silently pick one.
 4. As an analyst, I get a prioritised checklist with a recommended action for each issue.
 5. As an implementation lead, I can see a single disposition per document to triage go-live blockers.
 6. As an AI product owner, I can run a golden-set evaluation and see precision and recall before shipping any extraction change.
 7. As an analyst, if the AI is unavailable, I still get the full rules-based result.
+8. As an analyst, I can accept or correct each value and download a reviewed JSON file that records what I changed and whether the review is complete.
 
 ## 8. Acceptance criteria
 - AC1: With the clean sample, all 18 fields are extracted, there are zero findings, and the disposition is `ready`.
-- AC2: Every non-AI extracted value has at least one evidence line. Clicking it highlights that line.
-- AC3: A field found with two different values yields `CONFLICTING_VALUES` (error) and lists both values.
+- AC2: Every non-AI populated field has at least one evidence item with `page`, and an exact `quote` where `snippet.slice(start, end) === quote`, the quote appears on the stated page of the input, and `verified: true`. Missing fields are `null` with no evidence (`test/provenance.test.ts`).
+- AC3: A field found with two different values yields `CONFLICTING_VALUES` (error). The UI and JSON show both quotes with their pages (for the conflicting sample PDF: p.1 "$500" vs p.2 "$750").
 - AC4: The messy HDHP sample yields `FAMILY_OOP_LT_INDIVIDUAL` and `HDHP_DEDUCTIBLE_BELOW_MIN`, and the disposition is `blocked`.
 - AC5: AI-supplied values never overwrite rule values. They show `source: ai`, and disagreements appear as `AI_DISAGREES`.
 - AC6: If the AI call throws, the response is still 200 with `mode: rules` and an `ai_note`.
 - AC7: `npm run eval` exits non-zero if any threshold in §9 is breached.
 - AC8: The UI shows the independence disclaimer ("Independent prototype by Ayo Ahmed, not affiliated with Euphoric") and Euphoric asset attribution on every page load.
 - AC9: Each sample PDF, run through the PDF → text → analysis path, yields the same disposition and findings as its text version (`test/pdf.test.ts`).
+- AC10: The reviewer can accept or edit every field. The re-check clears resolved conflicts or missing fields. The downloaded JSON has `review.status` and a per-field `review_status`, and keeps missing values as `null`.
 
 ## 9. Quality and evaluation metrics
 | Metric | Definition | v0.1 threshold |
@@ -107,7 +112,7 @@ Turn each document into a correct plan record, find anything missing or contradi
 | Finding recall | expected finding codes raised / expected | 1.00 |
 | Finding precision | reported for monitoring | — |
 | Disposition accuracy | matches the golden disposition | 1.00 |
-| Evidence coverage | share of non-null rule values that have ≥1 evidence line | 100% (by construction) |
+| Evidence coverage | share of non-null rule values that have ≥1 verified, page-numbered quote | 100% (enforced by tests) |
 | Latency | server-side `meta.ms` in rules mode | < 50 ms typical |
 
 **Caveat:** the current golden set has 6 synthetic cases, and the rules were developed against it. It works as a regression suite. It does not estimate real-world accuracy.
@@ -137,6 +142,6 @@ Turn each document into a correct plan record, find anything missing or contradi
 
 ## 12. Next steps
 - Build a held-out golden set and add per-field metrics to the eval output.
-- Add a reviewer "accept / override" action and log overrides as evaluation signal.
+- Log reviewer edits server-side as an evaluation signal (edits are only in the downloaded JSON today).
 - Add a table-aware PDF parser and a multi-plan-per-document mode.
 - Make the schema per country, starting with a UK schema, since Euphoric is London-based.

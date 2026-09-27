@@ -17,9 +17,12 @@ for (const s of SAMPLES) {
   const html = `<!doctype html><meta charset="utf-8"><style>
     body{font:11pt/1.55 Helvetica,Arial,sans-serif;margin:48px;color:#111}
     .banner{font-size:8pt;color:#666;border-bottom:1px solid #ccc;padding-bottom:6px;margin-bottom:18px}
-    p{margin:0}</style>
+    p{margin:0} .page{break-after:page} .page:last-child{break-after:auto}</style>
     <div class="banner">SYNTHETIC SAMPLE for Benefits Intake QA (independent prototype by Ayo Ahmed). Fictional data.</div>
-    ${s.text.split("\n").map((l) => `<p>${esc(l) || "&nbsp;"}</p>`).join("\n")}`;
+    ${s.text
+      .split("\f")
+      .map((page) => `<div class="page">${page.split("\n").map((l) => `<p>${esc(l) || "&nbsp;"}</p>`).join("\n")}</div>`)
+      .join("\n")}`;
   const file = join(tmp, `${s.id}.html`);
   writeFileSync(file, html);
   execFileSync(chrome, [

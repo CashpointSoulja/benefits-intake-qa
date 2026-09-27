@@ -21,10 +21,29 @@ export type FieldKey =
 export type FieldValue = string | number | boolean;
 
 export interface Evidence {
-  /** 0-based line index in the normalized source text */
+  /** 1-based page number (PDF page, or form-feed separated page for text input) */
+  page: number;
+  /** 1-based index of the non-empty line within its page */
+  page_line: number;
+  /** 0-based index into Extraction.lines */
   line: number;
-  /** Verbatim source line */
+  /** Exact matched span, copied character-for-character from the submitted source */
+  quote: string;
+  /** Offsets of quote within snippet: snippet.slice(start, end) === quote */
+  start: number;
+  end: number;
+  /** Verbatim source line containing the quote (outer whitespace trimmed) */
   snippet: string;
+  /** Value this particular span supports; differs across evidence when the field conflicts */
+  value: FieldValue;
+  /** True when quote was re-located at the stated page and offsets in the original input */
+  verified: boolean;
+}
+
+export interface SourceLine {
+  page: number;
+  page_line: number;
+  text: string;
 }
 
 export interface ExtractedField {
@@ -52,6 +71,8 @@ export interface Finding {
 export interface Extraction {
   fields: Record<FieldKey, ExtractedField>;
   lineCount: number;
+  pages: number;
+  lines: SourceLine[];
 }
 
 export interface AnalysisResult {

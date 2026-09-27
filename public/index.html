@@ -70,18 +70,25 @@
       <div id="summary" class="summary"></div>
       <ol id="findings" class="findings"></ol>
 
-      <h2><span class="step">Step 3</span>Extracted fields</h2>
-      <p class="muted">Click a row to highlight its source line. Confidence is a fixed heuristic per pattern, not a calibrated probability.</p>
+      <h2><span class="step">Step 3</span>Review extracted fields</h2>
+      <p class="muted">Each value shows the exact source quote and page it came from. Edit a value or accept it as extracted; for contradictions, pick the quote to keep. Missing fields stay <code>null</code> unless you enter a value. Confidence is a fixed heuristic per pattern, not a calibrated probability.</p>
+      <div class="row review-bar">
+        <span id="reviewProgress" class="pill"></span>
+        <button id="acceptClean" class="chip" type="button">Accept all unflagged</button>
+        <span class="spacer"></span>
+        <button id="download" class="btn-dark" type="button">Download reviewed JSON</button>
+      </div>
       <table id="fields">
-        <thead><tr><th>Field</th><th>Value</th><th>Conf.</th><th>Source</th></tr></thead>
+        <thead><tr><th>Field</th><th>Value &amp; evidence</th><th>Review</th></tr></thead>
         <tbody></tbody>
       </table>
 
       <h2><span class="step">Step 4</span>Source with evidence</h2>
+      <p class="muted">Highlighted spans are the exact quotes above, shown by page.</p>
       <pre id="source" class="source"></pre>
 
       <details>
-        <summary>Raw JSON</summary>
+        <summary>Raw API response (JSON)</summary>
         <pre id="raw"></pre>
       </details>
     </section>

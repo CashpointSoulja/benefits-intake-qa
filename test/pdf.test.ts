@@ -26,13 +26,24 @@ describe("PDF intake end-to-end (sample PDFs → text → analysis)", () => {
   ];
   for (const [id, disposition, codes] of cases) {
     it(`${id}.pdf → ${disposition}`, async () => {
-      const { text, pages } = await pdfToText(pdfjs, load(id));
-      expect(pages).toBeGreaterThanOrEqual(1);
-      const r = await analyze(text);
+      const { pages } = await pdfToText(pdfjs, load(id));
+      expect(pages.length).toBeGreaterThanOrEqual(1);
+      const r = await analyze(pages);
       expect(r.summary.disposition).toBe(disposition);
       for (const c of codes) expect(r.findings.map((f) => f.code)).toContain(c);
     });
   }
+
+  it("keeps PDF page boundaries in provenance", async () => {
+    const { pages } = await pdfToText(pdfjs, load("conflicting-values"));
+    expect(pages.length).toBe(2);
+    const f = (await analyze(pages)).extraction.fields.deductible_individual;
+    expect(f.evidence.map((e) => [e.page, e.value, e.verified])).toEqual([
+      [1, 500, true],
+      [2, 750, true],
+    ]);
+    for (const e of f.evidence) expect(pages[e.page - 1]).toContain(e.quote);
+  });
 
   it("extracts the clean PPO field values exactly as from text", async () => {
     const { text } = await pdfToText(pdfjs, load("clean-ppo"));

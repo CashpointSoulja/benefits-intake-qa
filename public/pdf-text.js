@@ -22,16 +22,16 @@ export function itemsToLines(items) {
 /**
  * @param {any} pdfjs  pdfjs-dist module (browser or legacy Node build)
  * @param {ArrayBuffer | Uint8Array} data
- * @returns {Promise<{text: string, pages: number, chars: number}>}
+ * @returns {Promise<{text: string, pages: string[], chars: number}>}  one string per PDF page
  */
 export async function pdfToText(pdfjs, data) {
   const doc = await pdfjs.getDocument({ data: data instanceof Uint8Array ? data : new Uint8Array(data) }).promise;
-  const out = [];
+  const pages = [];
   for (let p = 1; p <= doc.numPages; p++) {
     const page = await doc.getPage(p);
     const content = await page.getTextContent();
-    out.push(...itemsToLines(content.items));
+    pages.push(itemsToLines(content.items).join("\n"));
   }
-  const text = out.join("\n");
-  return { text, pages: doc.numPages, chars: text.replace(/\s/g, "").length };
+  const text = pages.join("\n\n");
+  return { text, pages, chars: text.replace(/\s/g, "").length };
 }

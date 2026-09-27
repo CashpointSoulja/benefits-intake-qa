@@ -2,6 +2,7 @@ import {
   FIELD_KEYS,
   type Evidence,
   type ExtractedField,
+  type SourceLine,
   type Extraction,
   type FieldKey,
   type FieldValue,
@@ -223,15 +224,67 @@ function coerce(kind: Kind, raw: string): FieldValue | null {
   }
 }
 
+interface IndexedLine extends SourceLine {
+  /** Whitespace-collapsed text the patterns run against */
+  norm: string;
+  /** norm index -> index in text */
+  map: number[];
+}
+
+function collapse(text: string): { norm: string; map: number[] } {
+  let norm = "";
+  const map: number[] = [];
+  let gap = -1;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (c === " " || c === "\t" || c === "\u00a0") {
+      if (norm.length && gap < 0) gap = i;
+      continue;
+    }
+    if (gap >= 0) {
+      norm += " ";
+      map.push(gap);
+      gap = -1;
+    }
+    norm += c;
+    map.push(i);
+  }
+  return { norm, map };
+}
+
+/** A string is one document; form feeds (\f) split it into pages. An array is one string per page. */
+export function toPages(input: string | string[]): string[] {
+  return typeof input === "string" ? input.split("\f") : input;
+}
+
+export function splitSource(input: string | string[]): IndexedLine[] {
+  const out: IndexedLine[] = [];
+  toPages(input).forEach((pageText, p) => {
+    let n = 0;
+    for (const rawLine of pageText.split(/\r\n|\r|\n/)) {
+      const text = rawLine.trim();
+      if (!text) continue;
+      out.push({ page: p + 1, page_line: ++n, text, ...collapse(text) });
+    }
+  });
+  return out;
+}
+
+/** Re-locate a quote in the original input at its stated page and offsets. */
+export function verifyEvidence(input: string | string[], e: Pick<Evidence, "page" | "quote" | "start" | "end" | "snippet">): boolean {
+  const page = toPages(input)[e.page - 1];
+  return page !== undefined && e.quote.length > 0 && e.snippet.slice(e.start, e.end) === e.quote && page.includes(e.snippet);
+}
+
 interface Hit {
   value: FieldValue;
   evidence: Evidence;
   patternIdx: number;
 }
 
-/** Deterministic, label-driven extraction. Every value carries line-level evidence. */
-export function extractFields(raw: string): Extraction {
-  const lines = normalizeText(raw);
+/** Deterministic, label-driven extraction. Every value carries page-aware, verbatim span evidence. */
+export function extractFields(input: string | string[]): Extraction {
+  const lines = splitSource(input);
   const fields = {} as Record<FieldKey, ExtractedField>;
 
   for (const key of FIELD_KEYS) {
@@ -239,11 +292,25 @@ export function extractFields(raw: string): Extraction {
     const hits: Hit[] = [];
     lines.forEach((line, i) => {
       for (let p = 0; p < spec.patterns.length; p++) {
-        const m = line.match(spec.patterns[p]);
-        if (m && m[1] !== undefined) {
+        const m = line.norm.match(spec.patterns[p]);
+        if (m && m[1] !== undefined && m.index !== undefined) {
           const value = coerce(spec.kind, m[1]);
           if (value !== null) {
-            hits.push({ value, evidence: { line: i, snippet: line }, patternIdx: p });
+            const start = line.map[m.index];
+            const end = line.map[m.index + m[0].trimEnd().length - 1] + 1;
+            const ev: Evidence = {
+              page: line.page,
+              page_line: line.page_line,
+              line: i,
+              quote: line.text.slice(start, end),
+              start,
+              end,
+              snippet: line.text,
+              value,
+              verified: false,
+            };
+            ev.verified = verifyEvidence(input, ev);
+            hits.push({ value, evidence: ev, patternIdx: p });
             break;
           }
         }
@@ -270,5 +337,10 @@ export function extractFields(raw: string): Extraction {
     };
   }
 
-  return { fields, lineCount: lines.length };
+  return {
+    fields,
+    lineCount: lines.length,
+    pages: toPages(input).length,
+    lines: lines.map(({ page, page_line, text }) => ({ page, page_line, text })),
+  };
 }

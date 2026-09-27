@@ -1,9 +1,10 @@
-import { extractFields } from "./extract";
+import { extractFields, toPages } from "./extract";
 import { runChecks } from "./rules";
 import {
   FIELD_KEYS,
   REQUIRED_FIELDS,
   type AnalysisResult,
+  type ExtractedField,
   type Extraction,
   type FieldKey,
   type FieldValue,
@@ -31,9 +32,10 @@ export function summarize(ex: Extraction, findings: Finding[]): AnalysisResult["
  * Core pipeline: deterministic extraction -> optional AI second opinion -> rule checks.
  * The AI never overwrites a rule-extracted value; disagreement becomes a review finding.
  */
-export async function analyze(text: string, ai?: AiExtractor): Promise<AnalysisResult> {
+export async function analyze(input: string | string[], ai?: AiExtractor): Promise<AnalysisResult> {
   const t0 = Date.now();
-  const extraction = extractFields(text);
+  const extraction = extractFields(input);
+  const text = toPages(input).join("\n");
   let mode: AnalysisResult["meta"]["mode"] = "rules";
   let ai_note: string | undefined;
   const extra: Finding[] = [];
@@ -84,4 +86,33 @@ export async function analyze(text: string, ai?: AiExtractor): Promise<AnalysisR
     summary: summarize(extraction, findings),
     meta: { mode, ai_note, ms: Date.now() - t0 },
   };
+}
+
+export interface ReviewedField {
+  value: FieldValue | null;
+  review_status: "pending" | "accepted" | "edited";
+  confidence: number;
+  conflicts?: FieldValue[];
+}
+
+/**
+ * Re-run the QA checks on reviewer-confirmed values. Accepted or edited fields are treated as
+ * resolved: their conflicts are cleared and confidence is 1.
+ */
+export function recheck(fields: Record<FieldKey, ReviewedField>): Pick<AnalysisResult, "findings" | "summary"> {
+  const ex: Extraction = { fields: {} as Record<FieldKey, ExtractedField>, lineCount: 0, pages: 0, lines: [] };
+  for (const k of FIELD_KEYS) {
+    const f = fields[k];
+    const reviewed = f.review_status !== "pending";
+    ex.fields[k] = {
+      key: k,
+      value: f.value,
+      confidence: reviewed ? 1 : f.confidence,
+      evidence: [],
+      conflicts: reviewed ? undefined : f.conflicts,
+      source: "rules",
+    };
+  }
+  const findings = runChecks(ex);
+  return { findings, summary: summarize(ex, findings) };
 }
