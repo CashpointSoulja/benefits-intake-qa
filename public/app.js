@@ -55,7 +55,20 @@ async function loadSamples() {
   }
 }
 
+function clearResults() {
+  if (!last) return;
+  last = null;
+  reviewed = null;
+  review = {};
+  recheckSeq++;
+  els.results.hidden = true;
+  els.empty.hidden = false;
+}
+
+els.text.addEventListener("input", clearResults);
+
 els.sample.addEventListener("change", () => {
+  clearResults();
   const s = samples.find((x) => x.id === els.sample.value);
   els.sampleDesc.textContent = s ? s.description : "";
   if (s) {
@@ -76,6 +89,7 @@ async function loadPdfjs() {
 }
 
 async function loadFile(f, { autorun = false } = {}) {
+  clearResults();
   els.status.textContent = `Reading ${f.name}…`;
   try {
     if (f.type === "application/pdf" || /\.pdf$/i.test(f.name)) {
@@ -211,8 +225,11 @@ function renderFindings(findings) {
   }
 }
 
-function evidenceHtml(key, f) {
-  if (f.evidence.length === 0) return `<li>Not found in the document (value is <code>null</code>).</li>`;
+function evidenceHtml(key, f, r) {
+  if (f.evidence.length === 0)
+    return r.value === null
+      ? `<li>Not found in the document (value is <code>null</code>).</li>`
+      : `<li>Not found in the document; value entered by the reviewer, with no source quote.</li>`;
   return f.evidence
     .map((e, i) => `<li><span class="pg">p.${e.page} · line ${e.page_line}</span><q>${esc(e.quote)}</q>${
       e.verified ? "" : ` <span class="bad">quote not verified</span>`}${
@@ -231,7 +248,7 @@ function renderFields() {
     tr.innerHTML = `<td>${LABELS[key]}<br><span class="rs ${r.review_status}">${r.review_status}</span>
         ${f.value !== null ? `<div class="muted conf">conf ${f.confidence.toFixed(2)}${f.source !== "rules" ? ` · ${f.source}` : ""}</div>` : ""}</td>
       <td><input class="fv" data-key="${key}" value="${esc(fmt(r.value))}" placeholder="null (not found)" aria-label="${LABELS[key]} value" />
-        <ul class="ev-list">${evidenceHtml(key, f)}</ul></td>
+        <ul class="ev-list">${evidenceHtml(key, f, r)}</ul></td>
       <td><button class="accept" type="button" data-key="${key}">${r.review_status === "pending" ? (r.value === null ? "Confirm missing" : "Accept") : "Undo"}</button></td>`;
     tr.addEventListener("click", (e) => { if (!(e.target instanceof HTMLInputElement || e.target instanceof HTMLButtonElement)) highlight([key]); });
     els.fields.appendChild(tr);
