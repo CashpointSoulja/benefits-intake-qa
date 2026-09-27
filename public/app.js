@@ -1,3 +1,5 @@
+import { pdfToText } from "/pdf-text.js";
+
 const $ = (s) => document.querySelector(s);
 const els = {
   sample: $("#sample"),
@@ -48,44 +50,52 @@ els.sample.addEventListener("change", () => {
   if (s) els.text.value = s.text;
 });
 
-els.file.addEventListener("change", async () => {
+els.file.addEventListener("change", () => {
   const f = els.file.files[0];
-  if (!f) return;
+  if (f) loadFile(f);
+});
+
+async function loadPdfjs() {
+  const pdfjs = await import("/vendor/pdfjs/pdf.min.mjs");
+  pdfjs.GlobalWorkerOptions.workerSrc = "/vendor/pdfjs/pdf.worker.min.mjs";
+  return pdfjs;
+}
+
+async function loadFile(f, { autorun = false } = {}) {
   els.status.textContent = `Reading ${f.name}…`;
   try {
     if (f.type === "application/pdf" || /\.pdf$/i.test(f.name)) {
-      els.text.value = await pdfToText(f);
+      const { text, pages, chars } = await pdfToText(await loadPdfjs(), await f.arrayBuffer());
+      if (chars < 20) throw new Error("no text layer found. This looks like a scanned PDF, and OCR is out of scope for v0.1");
+      els.text.value = text;
+      els.status.textContent = `Extracted ${pages} page(s) from ${f.name} in your browser. Only the text is sent to the API.`;
     } else {
       els.text.value = await f.text();
+      els.status.textContent = `Loaded ${f.name} (${els.text.value.length} chars).`;
     }
-    els.status.textContent = `Loaded ${f.name} (${els.text.value.length} chars). Text extraction happens in your browser; only the text is sent to the API.`;
+    if (autorun) await run();
   } catch (e) {
-    els.status.textContent = `Could not read file: ${e.message}`;
+    els.status.textContent = `Could not read ${f.name}: ${e.message}`;
   }
+}
+
+$("#drop").addEventListener("dragover", (e) => { e.preventDefault(); $("#drop").classList.add("over"); });
+$("#drop").addEventListener("dragleave", () => $("#drop").classList.remove("over"));
+$("#drop").addEventListener("drop", (e) => {
+  e.preventDefault();
+  $("#drop").classList.remove("over");
+  const f = e.dataTransfer.files[0];
+  if (f) loadFile(f);
 });
 
-async function pdfToText(file) {
-  const pdfjs = await import("https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.min.mjs");
-  pdfjs.GlobalWorkerOptions.workerSrc = "https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.worker.min.mjs";
-  const doc = await pdfjs.getDocument({ data: await file.arrayBuffer() }).promise;
-  const out = [];
-  for (let p = 1; p <= doc.numPages; p++) {
-    const page = await doc.getPage(p);
-    const content = await page.getTextContent();
-    // Group glyph runs into lines by their y coordinate so label/value pairs stay together.
-    const rows = new Map();
-    for (const it of content.items) {
-      if (!it.str) continue;
-      const y = Math.round(it.transform[5]);
-      const key = [...rows.keys()].find((k) => Math.abs(k - y) <= 2) ?? y;
-      rows.set(key, [...(rows.get(key) ?? []), { x: it.transform[4], s: it.str }]);
-    }
-    const ordered = [...rows.entries()].sort((a, b) => b[0] - a[0]);
-    out.push(`--- page ${p} ---`);
-    for (const [, items] of ordered) out.push(items.sort((a, b) => a.x - b.x).map((i) => i.s).join(" "));
-  }
-  return out.join("\n");
-}
+document.querySelectorAll("[data-sample-pdf]").forEach((btn) =>
+  btn.addEventListener("click", async () => {
+    const id = btn.dataset.samplePdf;
+    const res = await fetch(`/samples/${id}.pdf`);
+    const blob = await res.blob();
+    await loadFile(new File([blob], `${id}.pdf`, { type: "application/pdf" }), { autorun: true });
+  }),
+);
 
 els.run.addEventListener("click", run);
 

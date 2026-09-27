@@ -2,7 +2,7 @@
 
 **Author:** Ayo Ahmed. **Status:** Prototype v0.1. **Last updated:** 2026-09-27
 
-> **Independent prototype.** Ayo Ahmed built this as a portfolio artifact. It is not Euphoric's product. It is not endorsed by Euphoric and was not built for any Euphoric client. All documents, employers, carriers, and figures in it are synthetic.
+> **Independent prototype by Ayo Ahmed, not affiliated with Euphoric.** Ayo built this as a portfolio concept prepared for Euphoric. It is not Euphoric's product, Euphoric has not endorsed it, and it is not a client implementation. The UI shows Euphoric's logo and screenshots from euphoric.global, credited to Euphoric, only to identify which company the concept was made for (see `public/brand/ATTRIBUTION.md`). All plan documents, employers, carriers, and figures are synthetic.
 
 ## 1. Problem summary
 
@@ -49,7 +49,7 @@ Turn each document into a correct plan record, find anything missing or contradi
 - **Human-in-the-loop by design.** The tool supports the reviewer's decision instead of replacing it, which fits a regulated, high-trust domain.
 
 ## 5. Workflow
-1. The analyst pastes text or uploads a PDF or .txt file. PDF text is extracted in the browser.
+1. The analyst drops or uploads a text-based PDF (or a .txt file, or pasted text). pdf.js is served from our own Cloudflare Worker, not a third-party CDN. It extracts text in the browser and groups it into visual lines by y-coordinate. Only the text is sent to the API. A PDF with almost no extractable text is rejected as "scanned, OCR out of scope".
 2. **Deterministic extraction** runs over the text. Label-driven patterns produce 18 fields, and each field records its source line(s) and a heuristic confidence.
 3. **Optional AI second opinion** (Cloudflare Workers AI) proposes values. The AI never overwrites a rule value:
    - It may fill a field the rules missed. The value is marked "AI, no evidence".
@@ -63,7 +63,7 @@ Turn each document into a correct plan record, find anything missing or contradi
 
 ## 6. Scope
 **In scope (v0.1)**
-- Single-document analysis of text, PDF, or .txt input.
+- Single-document analysis of text-based PDFs, .txt files, or pasted text. Four synthetic sample PDFs are included in `public/samples/`.
 - A fixed 18-field medical plan schema.
 - Line-level evidence and conflict detection.
 - 14 rule-based QA checks with configurable reference limits.
@@ -96,7 +96,8 @@ Turn each document into a correct plan record, find anything missing or contradi
 - AC5: AI-supplied values never overwrite rule values. They show `source: ai`, and disagreements appear as `AI_DISAGREES`.
 - AC6: If the AI call throws, the response is still 200 with `mode: rules` and an `ai_note`.
 - AC7: `npm run eval` exits non-zero if any threshold in §9 is breached.
-- AC8: The UI shows the independence disclaimer on every page load.
+- AC8: The UI shows the independence disclaimer ("Independent prototype by Ayo Ahmed, not affiliated with Euphoric") and Euphoric asset attribution on every page load.
+- AC9: Each sample PDF, run through the PDF → text → analysis path, yields the same disposition and findings as its text version (`test/pdf.test.ts`).
 
 ## 9. Quality and evaluation metrics
 | Metric | Definition | v0.1 threshold |
@@ -132,7 +133,7 @@ Turn each document into a correct plan record, find anything missing or contradi
 | Reference limits change yearly or vary by jurisdiction | Keep limits in config (`REFERENCE_LIMITS`), versioned by plan year |
 | Real PII gets uploaded to a demo | Show a disclaimer, persist nothing, and ship synthetic samples only |
 | PDF text order is lost (columns, tables) | Group PDF text into lines by y-coordinate. Out of scope: table recovery and OCR |
-| Readers mistake this for Euphoric's product | Put the disclaimer in the UI, README, and PRD. No Euphoric logos or wordmark. The brand-inspired palette is labelled as inspiration |
+| Readers mistake this for Euphoric's product, or the use of Euphoric's logo and screenshots is objected to | Keep the non-affiliation disclaimer and © Euphoric attribution in the UI, README, PRD and `public/brand/ATTRIBUTION.md`. Assets are isolated in `public/brand/` and can be removed quickly if Euphoric asks |
 
 ## 12. Next steps
 - Build a held-out golden set and add per-field metrics to the eval output.
