@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Benefits Intake QA — prototype</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <header class="hero">
+    <svg class="lines" viewBox="0 0 1200 400" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M-50 300 C 200 120, 420 380, 700 200 S 1100 60, 1300 180" />
+      <path d="M-50 220 C 260 60, 520 320, 780 140 S 1080 260, 1300 90" />
+      <path d="M-50 360 C 300 260, 560 420, 860 280 S 1120 200, 1300 320" />
+    </svg>
+    <div class="wrap">
+      <nav class="nav">
+        <span class="wordmark">Benefits Intake QA</span>
+        <a class="btn-dark" href="https://github.com/CashpointSoulja/benefits-intake-qa/blob/main/docs/PRD.md" target="_blank" rel="noopener">Read the PRD</a>
+      </nav>
+      <div class="hero-copy">
+        <h1>Catch plan-data errors at intake, before they reach go-live.</h1>
+        <p class="lede">Paste or upload a plan document. The tool extracts plan fields, links each one to its source line, and gives the reviewer a short checklist with a clear disposition.</p>
+        <a class="btn-dark" href="#workspace">Try a sample</a>
+        &nbsp; <a class="btn-ghost" href="https://github.com/CashpointSoulja/benefits-intake-qa" target="_blank" rel="noopener">View source</a>
+      </div>
+      <p class="disclaimer"><strong>Independent prototype by Ayo Ahmed.</strong> Not Euphoric's product, not endorsed by Euphoric, and not built for any client. The visual style is inspired by Euphoric's public site. All sample data is synthetic, so please don't upload real documents or personal data.</p>
+    </div>
+  </header>
+
+  <main class="wrap grid" id="workspace">
+    <section class="card">
+      <h2><span class="step">Step 1</span>Intake document</h2>
+      <div class="row">
+        <label for="sample">Load a sample</label>
+        <select id="sample"><option value="">— choose —</option></select>
+        <label class="file">Or upload PDF / .txt <input id="file" type="file" accept=".pdf,.txt,text/plain,application/pdf" /></label>
+      </div>
+      <p id="sampleDesc" class="muted"></p>
+      <textarea id="text" rows="18" placeholder="Paste intake text here (carrier summary, SBC excerpt, broker email…)"></textarea>
+      <div class="row">
+        <label class="check"><input id="useAi" type="checkbox" /> Add Workers AI second opinion <span class="muted">(optional; rules always run)</span></label>
+        <span class="spacer"></span><button id="run" class="btn-dark">Analyze document</button>
+      </div>
+      <p id="status" class="muted"></p>
+    </section>
+
+    <section class="card empty" id="empty"><h2>Results appear here</h2><p>Pick a sample, such as <em>Messy HDHP intake form</em>, then choose <strong>Analyze document</strong>.</p></section>
+    <section class="card" id="results" hidden>
+      <h2><span class="step">Step 2</span>Reviewer checklist</h2>
+      <div id="summary" class="summary"></div>
+      <ol id="findings" class="findings"></ol>
+
+      <h2><span class="step">Step 3</span>Extracted fields</h2>
+      <p class="muted">Click a row to highlight its source line. Confidence is a fixed heuristic per pattern, not a calibrated probability.</p>
+      <table id="fields">
+        <thead><tr><th>Field</th><th>Value</th><th>Conf.</th><th>Source</th></tr></thead>
+        <tbody></tbody>
+      </table>
+
+      <h2><span class="step">Step 4</span>Source with evidence</h2>
+      <pre id="source" class="source"></pre>
+
+      <details>
+        <summary>Raw JSON</summary>
+        <pre id="raw"></pre>
+      </details>
+    </section>
+  </main>
+
+  <footer class="wrap muted">
+    <p>How this maps to the job: document analysis (upload/paste), extraction &amp; data input (structured fields with evidence), AI evaluation (<code>npm run eval</code> golden set), client implementation (reviewer disposition: ready / needs review / blocked).</p>
+  </footer>
+
+  <script type="module" src="/app.js"></script>
+</body>
+</html>

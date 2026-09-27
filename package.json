@@ -1,0 +1,23 @@
+{
+  "name": "benefits-intake-qa",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Benefits Intake QA — independent prototype by Ayo Ahmed (not affiliated with Euphoric)",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "eval": "tsx eval/run.ts"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260927.1",
+    "@types/node": "^26.6.3",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.2",
+    "wrangler": "^4.142.0"
+  }
+}
