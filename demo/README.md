@@ -1,4 +1,8 @@
-# Demo video
+# Demo videos
+
+**Featured:** `benefits-intake-qa-launch-demo.mp4`, the produced launch demo (see "Composed launch demo" below). The two recordings below are the original September 27 demo and the September 28 rules-only walkthrough it was cut from.
+
+## Original production demo (September 27, 2026)
 
 `benefits-intake-qa-demo.mp4` (81 s, H.264, 1600×1200, ~6 MB) was recorded on September 27, 2026 against the production site https://benefits-intake-qa.ayomideahmedcp.workers.dev/ using synthetic sample PDFs only. Author: Ayo Ahmed.
 

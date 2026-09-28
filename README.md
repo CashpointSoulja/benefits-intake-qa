@@ -11,7 +11,8 @@ A small tool that turns a benefits plan document into structured fields, links e
   - [Test results](docs/TEST_RESULTS.md)
   - [Role viability](docs/ROLE_VIABILITY.md) (demonstrated work vs. hypothetical customer need)
   - [Roadmap](docs/ROADMAP.md) (gated v2)
-  - [Production demo video](demo/benefits-intake-qa-demo.mp4) and [rules-only walkthrough](demo/benefits-intake-qa-walkthrough.mp4)
+  - **Featured:** [launch demo](demo/benefits-intake-qa-launch-demo.mp4) (Remotion-produced, 84 s, real production footage; AI shown only from a labelled archive clip)
+  - [Rules-only production walkthrough, Sept 28](demo/benefits-intake-qa-walkthrough.mp4) (raw source footage, shows the corrected docs) and [original production demo, Sept 27](demo/benefits-intake-qa-demo.mp4) (81 s)
 - **Stack:** a Cloudflare Worker (TypeScript API) serves the static frontend from `public/`. An optional, server-side OpenAI second opinion (`gpt-5.4-nano-2026-03-17`) sits behind a lifetime budget gate in a SQLite Durable Object (`BudgetGate`).
 
 **Production status (September 28, 2026):** the live demo runs `main` with the OpenAI second opinion deployed and configured. It is off unless the visitor ticks the box; rules always run. The paid API has had only a three-call synthetic spot-check (see [TEST_RESULTS.md](docs/TEST_RESULTS.md)); AI accuracy has not been evaluated. The earlier Workers AI model was retired on 2026-05-30, so production was rules-only until this deploy.
