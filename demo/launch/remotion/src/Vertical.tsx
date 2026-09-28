@@ -3,6 +3,7 @@ import {
   AbsoluteFill, Easing, Img, OffthreadVideo, Sequence, interpolate,
   staticFile, useCurrentFrame,
 } from 'remotion';
+import events from './events.json';
 
 const FPS = 30;
 const ORANGE = '#F26B21';
@@ -25,6 +26,8 @@ const Reveal: React.FC<{children: React.ReactNode; delay?: number; distance?: nu
   };
 
 type Crop = {at: number; x: number; y: number; w: number; h: number};
+type Ev = {t: number; kind: string; x: number; y: number};
+const EVS = events as Ev[];
 
 const interpolateCrop = (keys: Crop[], t: number): Crop => {
   if (t <= keys[0].at) return keys[0];
@@ -42,23 +45,48 @@ const interpolateCrop = (keys: Crop[], t: number): Crop => {
 
 const Source: React.FC<{
   src: 'benefits-intake-qa-walkthrough.mp4' | 'benefits-intake-qa-ai-archive-9x16.mp4'; from: number; width: number; height: number;
-  crop: Crop[]; label: string; playbackRate?: number;
-}> = ({src, from, width, height, crop, label, playbackRate = 1}) => {
+  crop: Crop[]; label: string; playbackRate?: number; frameHeight?: number; top?: number;
+}> = ({src, from, width, height, crop, label, playbackRate = 1, frameHeight = 1000, top}) => {
   const f = useCurrentFrame();
   const c = interpolateCrop(crop, f / FPS);
   const enter = progress(f, 7, 24);
-  const scale = Math.min(960 / c.w, 1000 / c.h);
+  const scale = Math.min(960 / c.w, frameHeight / c.h);
   const x = 480 - (c.x + c.w / 2) * scale;
-  const y = 500 - (c.y + c.h / 2) * scale;
+  const y = frameHeight / 2 - (c.y + c.h / 2) * scale;
+  const visibleTop = Math.max(0, y);
+  const visibleBottom = Math.min(frameHeight, y + height * scale);
+  const cardHeight = visibleBottom - visibleTop;
+  const sourceTime = Math.round(from * FPS) / FPS + f / FPS * playbackRate;
   return (
-    <div style={{position: 'absolute', top: 490, left: 60, width: 960, height: 1000,
+    <div style={{position: 'absolute', top: top ?? 490 + (1000 - cardHeight) / 2,
+      left: 60, width: 960, height: cardHeight,
       borderRadius: 30, overflow: 'hidden', background: '#211f1d', border: '3px solid #f6c5a5',
       boxShadow: '0 28px 65px rgba(29,29,27,.22)', opacity: enter,
       transform: `translateY(${(1 - enter) * 54}px) scale(${0.965 + enter * 0.035})`}}>
       <div style={{position: 'absolute', width, height, transformOrigin: '0 0',
-        transform: `translate(${x}px, ${y}px) scale(${scale})`}}>
+        transform: `translate(${x}px, ${y - visibleTop}px) scale(${scale})`}}>
         <OffthreadVideo src={staticFile(src)} startFrom={Math.round(from * FPS)} playbackRate={playbackRate} muted
           style={{width, height}} />
+        {src === 'benefits-intake-qa-walkthrough.mp4' && EVS.map((e, i) => {
+          const elapsed = sourceTime - e.t;
+          const duration = e.kind === 'left_click' ? 0.75 : 0.65;
+          if (elapsed < 0 || elapsed > duration) return null;
+          const opacity = 1 - elapsed / duration;
+          const size = (e.kind === 'left_click' ? 22 + 74 * elapsed / duration : 78) / scale;
+          return <div key={i} style={{position: 'absolute', left: e.x, top: e.y,
+            pointerEvents: 'none'}}>
+            {e.kind === 'left_click' ?
+              <div style={{position: 'absolute', left: -size / 2, top: -size / 2, width: size,
+                height: size, borderRadius: '50%', border: `${4 / scale}px solid ${ORANGE}`,
+                boxSizing: 'border-box', boxShadow: `0 0 ${18 / scale}px ${ORANGE}`, opacity}} /> :
+              <div style={{position: 'absolute', left: -size / 2, top: -size / 2, width: size,
+                height: size, borderRadius: '50%',
+                background: 'radial-gradient(circle, rgba(242,107,33,.55), rgba(242,107,33,0) 70%)', opacity}} />}
+            <div style={{position: 'absolute', left: -7 / scale, top: -7 / scale,
+              width: 14 / scale, height: 14 / scale, borderRadius: '50%',
+              background: ORANGE, opacity: opacity * 0.9}} />
+          </div>;
+        })}
       </div>
       <div style={{position: 'absolute', left: 20, bottom: 20, background: 'rgba(29,29,27,.94)',
         color: 'white', font: `bold 25px ${FONT}`, padding: '12px 18px', borderRadius: 12}}>{label}</div>
@@ -244,11 +272,14 @@ const Eval: React.FC = () => {
 const Gap: React.FC = () => (
   <Frame eyebrow="05 / published results" title="A known failure stays visible."
     detail="T11 accessibility failed. Image-only scans need OCR; real-world accuracy has not been measured.">
-    <Source src="benefits-intake-qa-walkthrough.mp4" from={62.6} width={1600} height={1200} label="Published TEST_RESULTS.md · T11"
-      crop={[{at: 0, x: 440, y: 430, w: 1040, h: 430},
-        {at: 1.4, x: 440, y: 560, w: 1040, h: 200},
-        {at: 7, x: 440, y: 560, w: 1040, h: 200}]} />
-    <Evidence delay={52} size={42} accent>T11 accessibility: FAIL</Evidence>
+    <Source src="benefits-intake-qa-walkthrough.mp4" from={56.6} width={1600} height={1200}
+      playbackRate={0.25} frameHeight={350} top={625} label="Current production · TEST_RESULTS.md"
+      crop={[{at: 0, x: 440, y: 710, w: 600, h: 150},
+        {at: 7, x: 440, y: 710, w: 600, h: 150}]} />
+    <Card top={1100} color="#ffe2ca" delay={50}>
+      Current production: T11 Still Fail. Scanned PDFs need OCR.
+    </Card>
+    <Evidence delay={95} size={42} accent>T11 accessibility: STILL FAIL</Evidence>
   </Frame>
 );
 

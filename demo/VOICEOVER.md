@@ -13,7 +13,7 @@ Record in the first person at a conversational pace. Timecodes match `benefits-i
 | 00:37 → 00:42 | Family: twelve hundred on page one, eighteen hundred on page two. Both quotes stay visible. |
 | 00:42 → 00:50 | I choose both page-two quotes, then accept the other fields. The original evidence stays attached. |
 | 00:50 → 00:57 | After review, it becomes ready. The export keeps my nine hundred and the original six hundred. |
-| 00:57 → 01:05 | I run fifty-six tests and a six-case synthetic evaluation. That checks regressions, not real-world accuracy. |
+| 00:57 → 01:05 | The build passes fifty-six tests and a six-case synthetic evaluation. That checks regressions, not real-world accuracy. |
 | 01:05 → 01:12 | I publish failures too: accessibility test T-eleven fails, scans need OCR, and real-document accuracy is unmeasured. |
 | 01:12 → 01:20 | This earlier AI call is a genuine production archive. I made no new paid call for this video. |
 | 01:20 → 01:27 | The AI-filled carrier stays only because it appears on page one. Rules still run first. |

@@ -36,7 +36,7 @@ After review, it becomes ready. The export keeps my nine hundred and the origina
 
 10
 00:00:57,000 --> 00:01:05,000
-I run fifty-six tests and a six-case synthetic evaluation. That checks regressions, not real-world accuracy.
+The build passes fifty-six tests and a six-case synthetic evaluation. That checks regressions, not real-world accuracy.
 
 11
 00:01:05,000 --> 00:01:12,000
