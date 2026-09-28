@@ -1,6 +1,20 @@
 # Demo videos
 
-**Featured:** `benefits-intake-qa-launch-demo.mp4`, the produced launch demo (see "Composed launch demo" below). The two recordings below are the original September 27 demo and the September 28 rules-only walkthrough it was cut from.
+**Featured:** [vertical launch demo](benefits-intake-qa-launch-vertical.mp4), a silent, phone-first production cut. Record over it with the [timed first-person script](VOICEOVER.md) or import the matching [SRT](VOICEOVER.srt). The landscape launch cut remains below.
+
+## Vertical launch demo (September 28, 2026)
+
+`benefits-intake-qa-launch-vertical.mp4` is 96 s at 1080×1920, 30 fps, H.264, with no audio track. Rendered from the `Vertical` composition in `launch/remotion/src/Vertical.tsx`. It reframes the real 1600×1200 production walkthrough for a portrait canvas, moving between targeted UI crops and large evidence labels for the family OOP inversion, both p.1/p.2 deductible conflicts, the reviewer’s p.2 choice, After review Ready, the synthetic evaluation caveat and T11 Fail. The AI segment uses the original 1080×1920 production recording from September 27 (`benefits-intake-qa-ai-archive-9x16.mp4`), explicitly labelled archive; it makes no new call. No UI or outcome is staged. The independent-prototype attribution is visible throughout.
+
+Rebuild (Node 22, ffmpeg and Chrome/Remotion headless browser):
+
+```bash
+cd demo/launch/remotion
+npm ci
+npx remotion render src/index.ts Vertical ../../benefits-intake-qa-launch-vertical.mp4 --public-dir ../../ --codec h264 --crf 19
+```
+
+The render reads both production recordings directly from `demo/` via `--public-dir`; `launch/logo.svg` is the same brand SVG already used in the product. No local-only media is required. The lines and boundaries in `VOICEOVER.md` and `VOICEOVER.srt` both match the 96-second timeline.
 
 ## Original production demo (September 27, 2026)
 

@@ -31,7 +31,7 @@ function camAt(keys: Box[], t: number) {
 }
 
 const Logo: React.FC<{width: number; sunburst?: string}> = ({width}) => (
-  <Img src={staticFile('logo.svg')} style={{width, height: 'auto', display: 'block'}} />
+  <Img src={staticFile('launch/logo.svg')} style={{width, height: 'auto', display: 'block'}} />
 );
 
 const Attribution: React.FC<{dark?: boolean}> = ({dark}) => (
@@ -245,8 +245,8 @@ const Close: React.FC = () => {
 
 /* ---------- Timeline ---------- */
 
-const WT = {src: 'wt.mp4', srcW: 1600, srcH: 1200};
-const AI = {src: 'ai.mp4', srcW: 1080, srcH: 1920};
+const WT = {src: 'benefits-intake-qa-walkthrough.mp4', srcW: 1600, srcH: 1200};
+const AI = {src: 'benefits-intake-qa-ai-archive-9x16.mp4', srcW: 1080, srcH: 1920};
 const FULL: Omit<Box, 't'> = {x: 0, y: 0, w: 1600, h: 1200};
 const EVS = events as Ev[];
 
