@@ -13,7 +13,7 @@ It shows:
 
 ## Rules-only walkthrough (September 28, 2026)
 
-`benefits-intake-qa-walkthrough.mp4` (98 s, H.264, 1600×1200, ~5 MB) is a real Chrome recording of the production site. Idle pauses were trimmed; nothing was staged. The OpenAI option stayed off and no AI call was made. It shows three synthetic PDFs (clean: Ready; family OOP below individual: Blocked; conflicting pages: Blocked), a reviewer choosing the p.2 quotes, After review changing to Ready, the reviewed JSON export, and the published PRD, test plan, test results (T11 accessibility **Fail**) and roadmap.
+`benefits-intake-qa-walkthrough.mp4` (97.8 s, H.264, 1600×1200) is a real Chrome recording of the production site, re-recorded on September 28, 2026 after the doc corrections in this PR. Idle pauses were trimmed; nothing was staged. The OpenAI option stayed off and a request log confirmed all three analyses sent `use_ai=false`. It shows three synthetic PDFs (clean: Ready; family OOP below individual: Blocked; conflicting pages: Blocked), a reviewer choosing the p.2 quotes, After review changing to Ready, the reviewed JSON export, and the corrected TEST_RESULTS (Sept 27 historical vs Sept 28 current, 56/56, T11 accessibility **Fail**, $1.80 app-side gate) and ROADMAP on this PR's branch. It is the source footage for the launch demo below.
 
 `walkthrough/` holds the synthetic source documents, the production verification output (`verify-results.json`, rerun rules-only on September 28, 2026), the reviewed JSON exports, the frame contact sheet, and a screenshot of the image-only PDF being rejected (not in the video). See `walkthrough/WALKTHROUGH_RESULTS.md`.
 
