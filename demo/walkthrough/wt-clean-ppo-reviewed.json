@@ -1,0 +1,430 @@
+{
+  "schema": "benefits-intake-qa/reviewed-plan@1",
+  "exported_at": "2026-09-28T09:26:38.228Z",
+  "disclaimer": "Independent prototype by Ayo Ahmed, not affiliated with Euphoric. Synthetic data only.",
+  "document": {
+    "name": "wt-clean-ppo.pdf",
+    "input": "pdf",
+    "pages": 1
+  },
+  "review": {
+    "status": "complete",
+    "fields_reviewed": 18,
+    "fields_total": 18,
+    "extracted_disposition": "ready",
+    "reviewed_disposition": "ready"
+  },
+  "fields": {
+    "employer_name": {
+      "value": "Juniper Row Studios LLC",
+      "review_status": "accepted",
+      "extracted_value": "Juniper Row Studios LLC",
+      "source": "rules",
+      "confidence": 0.9,
+      "page": 1,
+      "quote": "Employer: Juniper Row Studios LLC",
+      "evidence": [
+        {
+          "page": 1,
+          "page_line": 3,
+          "quote": "Employer: Juniper Row Studios LLC",
+          "start": 0,
+          "end": 33,
+          "line_text": "Employer: Juniper Row Studios LLC",
+          "value": "Juniper Row Studios LLC",
+          "verified": true
+        }
+      ],
+      "conflicts": null
+    },
+    "carrier": {
+      "value": "Blue Harbor Health",
+      "review_status": "accepted",
+      "extracted_value": "Blue Harbor Health",
+      "source": "rules",
+      "confidence": 0.9,
+      "page": 1,
+      "quote": "Carrier: Blue Harbor Health",
+      "evidence": [
+        {
+          "page": 1,
+          "page_line": 4,
+          "quote": "Carrier: Blue Harbor Health",
+          "start": 0,
+          "end": 27,
+          "line_text": "Carrier: Blue Harbor Health",
+          "value": "Blue Harbor Health",
+          "verified": true
+        }
+      ],
+      "conflicts": null
+    },
+    "plan_name": {
+      "value": "Harbor Choice PPO 2000",
+      "review_status": "accepted",
+      "extracted_value": "Harbor Choice PPO 2000",
+      "source": "rules",
+      "confidence": 0.85,
+      "page": 1,
+      "quote": "Plan Name: Harbor Choice PPO 2000",
+      "evidence": [
+        {
+          "page": 1,
+          "page_line": 5,
+          "quote": "Plan Name: Harbor Choice PPO 2000",
+          "start": 0,
+          "end": 33,
+          "line_text": "Plan Name: Harbor Choice PPO 2000",
+          "value": "Harbor Choice PPO 2000",
+          "verified": true
+        }
+      ],
+      "conflicts": null
+    },
+    "plan_type": {
+      "value": "PPO",
+      "review_status": "accepted",
+      "extracted_value": "PPO",
+      "source": "rules",
+      "confidence": 0.8,
+      "page": 1,
+      "quote": "Plan Type: PPO",
+      "evidence": [
+        {
+          "page": 1,
+          "page_line": 6,
+          "quote": "Plan Type: PPO",
+          "start": 0,
+          "end": 14,
+          "line_text": "Plan Type: PPO",
+          "value": "PPO",
+          "verified": true
+        },
+        {
+          "page": 1,
+          "page_line": 5,
+          "quote": "PPO",
+          "start": 25,
+          "end": 28,
+          "line_text": "Plan Name: Harbor Choice PPO 2000",
+          "value": "PPO",
+          "verified": true
+        }
+      ],
+      "conflicts": null
+    },
+    "effective_date": {
+      "value": "2026-01-01",
+      "review_status": "accepted",
+      "extracted_value": "2026-01-01",
+      "source": "rules",
+      "confidence": 0.9,
+      "page": 1,
+      "quote": "Effective Date: 01/01/2026",
+      "evidence": [
+        {
+          "page": 1,
+          "page_line": 7,
+          "quote": "Effective Date: 01/01/2026",
+          "start": 0,
+          "end": 26,
+          "line_text": "Effective Date: 01/01/2026",
+          "value": "2026-01-01",
+          "verified": true
+        }
+      ],
+      "conflicts": null
+    },
+    "renewal_date": {
+      "value": "2026-12-31",
+      "review_status": "accepted",
+      "extracted_value": "2026-12-31",
+      "source": "rules",
+      "confidence": 0.85,
+      "page": 1,
+      "quote": "Renewal Date: 12/31/2026",
+      "evidence": [
+        {
+          "page": 1,
+          "page_line": 8,
+          "quote": "Renewal Date: 12/31/2026",
+          "start": 0,
+          "end": 24,
+          "line_text": "Renewal Date: 12/31/2026",
+          "value": "2026-12-31",
+          "verified": true
+        }
+      ],
+      "conflicts": null
+    },
+    "deductible_individual": {
+      "value": 2000,
+      "review_status": "accepted",
+      "extracted_value": 2000,
+      "source": "rules",
+      "confidence": 0.85,
+      "page": 1,
+      "quote": "Deductible — Individual: $2,000",
+      "evidence": [
+        {
+          "page": 1,
+          "page_line": 10,
+          "quote": "Deductible — Individual: $2,000",
+          "start": 0,
+          "end": 31,
+          "line_text": "Deductible — Individual: $2,000",
+          "value": 2000,
+          "verified": true
+        }
+      ],
+      "conflicts": null
+    },
+    "deductible_family": {
+      "value": 4000,
+      "review_status": "accepted",
+      "extracted_value": 4000,
+      "source": "rules",
+      "confidence": 0.85,
+      "page": 1,
+      "quote": "Deductible — Family: $4,000",
+      "evidence": [
+        {
+          "page": 1,
+          "page_line": 11,
+          "quote": "Deductible — Family: $4,000",
+          "start": 0,
+          "end": 27,
+          "line_text": "Deductible — Family: $4,000",
+          "value": 4000,
+          "verified": true
+        }
+      ],
+      "conflicts": null
+    },
+    "oop_max_individual": {
+      "value": 6000,
+      "review_status": "accepted",
+      "extracted_value": 6000,
+      "source": "rules",
+      "confidence": 0.85,
+      "page": 1,
+      "quote": "Out-of-Pocket Maximum — Individual: $6,000",
+      "evidence": [
+        {
+          "page": 1,
+          "page_line": 12,
+          "quote": "Out-of-Pocket Maximum — Individual: $6,000",
+          "start": 0,
+          "end": 42,
+          "line_text": "Out-of-Pocket Maximum — Individual: $6,000",
+          "value": 6000,
+          "verified": true
+        }
+      ],
+      "conflicts": null
+    },
+    "oop_max_family": {
+      "value": 12000,
+      "review_status": "accepted",
+      "extracted_value": 12000,
+      "source": "rules",
+      "confidence": 0.85,
+      "page": 1,
+      "quote": "Out-of-Pocket Maximum — Family: $12,000",
+      "evidence": [
+        {
+          "page": 1,
+          "page_line": 13,
+          "quote": "Out-of-Pocket Maximum — Family: $12,000",
+          "start": 0,
+          "end": 39,
+          "line_text": "Out-of-Pocket Maximum — Family: $12,000",
+          "value": 12000,
+          "verified": true
+        }
+      ],
+      "conflicts": null
+    },
+    "coinsurance_pct": {
+      "value": 20,
+      "review_status": "accepted",
+      "extracted_value": 20,
+      "source": "rules",
+      "confidence": 0.75,
+      "page": 1,
+      "quote": "Coinsurance (member pays): 20%",
+      "evidence": [
+        {
+          "page": 1,
+          "page_line": 14,
+          "quote": "Coinsurance (member pays): 20%",
+          "start": 0,
+          "end": 30,
+          "line_text": "Coinsurance (member pays): 20%",
+          "value": 20,
+          "verified": true
+        }
+      ],
+      "conflicts": null
+    },
+    "pcp_copay": {
+      "value": 30,
+      "review_status": "accepted",
+      "extracted_value": 30,
+      "source": "rules",
+      "confidence": 0.8,
+      "page": 1,
+      "quote": "Primary Care Visit copay: $30",
+      "evidence": [
+        {
+          "page": 1,
+          "page_line": 15,
+          "quote": "Primary Care Visit copay: $30",
+          "start": 0,
+          "end": 29,
+          "line_text": "Primary Care Visit copay: $30",
+          "value": 30,
+          "verified": true
+        }
+      ],
+      "conflicts": null
+    },
+    "specialist_copay": {
+      "value": 60,
+      "review_status": "accepted",
+      "extracted_value": 60,
+      "source": "rules",
+      "confidence": 0.8,
+      "page": 1,
+      "quote": "Specialist Visit copay: $60",
+      "evidence": [
+        {
+          "page": 1,
+          "page_line": 16,
+          "quote": "Specialist Visit copay: $60",
+          "start": 0,
+          "end": 27,
+          "line_text": "Specialist Visit copay: $60",
+          "value": 60,
+          "verified": true
+        }
+      ],
+      "conflicts": null
+    },
+    "er_copay": {
+      "value": 300,
+      "review_status": "accepted",
+      "extracted_value": 300,
+      "source": "rules",
+      "confidence": 0.8,
+      "page": 1,
+      "quote": "Emergency Room copay: $300",
+      "evidence": [
+        {
+          "page": 1,
+          "page_line": 17,
+          "quote": "Emergency Room copay: $300",
+          "start": 0,
+          "end": 26,
+          "line_text": "Emergency Room copay: $300",
+          "value": 300,
+          "verified": true
+        }
+      ],
+      "conflicts": null
+    },
+    "waiting_period_days": {
+      "value": 30,
+      "review_status": "accepted",
+      "extracted_value": 30,
+      "source": "rules",
+      "confidence": 0.75,
+      "page": 1,
+      "quote": "Waiting period: 30 days",
+      "evidence": [
+        {
+          "page": 1,
+          "page_line": 20,
+          "quote": "Waiting period: 30 days",
+          "start": 0,
+          "end": 23,
+          "line_text": "Waiting period: 30 days",
+          "value": 30,
+          "verified": true
+        }
+      ],
+      "conflicts": null
+    },
+    "eligibility_hours_per_week": {
+      "value": 30,
+      "review_status": "accepted",
+      "extracted_value": 30,
+      "source": "rules",
+      "confidence": 0.8,
+      "page": 1,
+      "quote": "30 hours per week",
+      "evidence": [
+        {
+          "page": 1,
+          "page_line": 19,
+          "quote": "30 hours per week",
+          "start": 44,
+          "end": 61,
+          "line_text": "Eligible class: full-time employees working 30 hours per week",
+          "value": 30,
+          "verified": true
+        }
+      ],
+      "conflicts": null
+    },
+    "employer_contribution_pct": {
+      "value": 75,
+      "review_status": "accepted",
+      "extracted_value": 75,
+      "source": "rules",
+      "confidence": 0.8,
+      "page": 1,
+      "quote": "Employer contribution: 75%",
+      "evidence": [
+        {
+          "page": 1,
+          "page_line": 21,
+          "quote": "Employer contribution: 75%",
+          "start": 0,
+          "end": 26,
+          "line_text": "Employer contribution: 75% of employee-only premium",
+          "value": 75,
+          "verified": true
+        }
+      ],
+      "conflicts": null
+    },
+    "hsa_eligible": {
+      "value": false,
+      "review_status": "accepted",
+      "extracted_value": false,
+      "source": "rules",
+      "confidence": 0.75,
+      "page": 1,
+      "quote": "HSA eligible: No",
+      "evidence": [
+        {
+          "page": 1,
+          "page_line": 22,
+          "quote": "HSA eligible: No",
+          "start": 0,
+          "end": 16,
+          "line_text": "HSA eligible: No",
+          "value": false,
+          "verified": true
+        }
+      ],
+      "conflicts": null
+    }
+  },
+  "findings": [],
+  "meta": {
+    "mode": "rules",
+    "ms": 0
+  }
+}

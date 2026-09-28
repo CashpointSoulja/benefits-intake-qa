@@ -11,15 +11,16 @@ A small tool that turns a benefits plan document into structured fields, links e
   - [Test results](docs/TEST_RESULTS.md)
   - [Role viability](docs/ROLE_VIABILITY.md) (demonstrated work vs. hypothetical customer need)
   - [Roadmap](docs/ROADMAP.md) (gated v2)
-  - [Production demo video](demo/benefits-intake-qa-demo.mp4)
+  - **Featured:** [launch demo](demo/benefits-intake-qa-launch-demo.mp4) (Remotion-produced, 84 s, real production footage; AI shown only from a labelled archive clip)
+  - [Rules-only production walkthrough, Sept 28](demo/benefits-intake-qa-walkthrough.mp4) (raw source footage, shows the corrected docs) and [original production demo, Sept 27](demo/benefits-intake-qa-demo.mp4) (81 s)
 - **Stack:** a Cloudflare Worker (TypeScript API) serves the static frontend from `public/`. An optional, server-side OpenAI second opinion (`gpt-5.4-nano-2026-03-17`) sits behind a lifetime budget gate in a SQLite Durable Object (`BudgetGate`).
 
-**Production status:** the live demo still runs the build from before PR #3. Its Workers AI model was retired on 2026-05-30, so every analysis there is **rules-only**. The OpenAI second opinion described here takes effect only after PR #3 is merged, `OPENAI_API_KEY` is set as a Worker secret, and it is deployed with `wrangler deploy`. It has not been exercised against the paid API.
+**Production status (September 28, 2026):** the live demo runs `main` with the OpenAI second opinion deployed and configured. It is off unless the visitor ticks the box; rules always run. The paid API has had only a three-call synthetic spot-check (see [TEST_RESULTS.md](docs/TEST_RESULTS.md)); AI accuracy has not been evaluated. The earlier Workers AI model was retired on 2026-05-30, so production was rules-only until this deploy.
 
 ## What it does
 1. You drop or upload a text-based PDF, or paste text. pdf.js is served from the Worker's own assets (`public/vendor/pdfjs`) and extracts the text in the browser. Sample PDFs are in `public/samples/`.
 2. Deterministic extraction finds 18 plan fields. Each populated field records a verbatim quote, a page number, character offsets, and a `verified` flag. Missing fields are `null`. Contradictions keep every quote and page.
-3. When OpenAI is configured and the budget gate allows it, an OpenAI model gives a second opinion (production is rules-only today; see above). It never overwrites a rule-extracted value. It fills a gap only when its value is located verbatim, with a page, in the source; otherwise the suggestion is reported as a finding and the field stays `null`.
+3. When OpenAI is configured and the budget gate allows it, an OpenAI model gives a second opinion (optional; see production status above). It never overwrites a rule-extracted value. It fills a gap only when its value is located verbatim, with a page, in the source; otherwise the suggestion is reported as a finding and the field stays `null`.
 4. 11 QA checks run, covering missing fields, conflicts, family < individual, OOP < deductible, HSA/plan-type consistency, percentage plausibility, and dates. No jurisdiction- or plan-year-specific limits (ACA, HDHP, waiting period) are applied.
 5. The tool returns a disposition: **ready**, **needs review**, or **blocked**.
 6. The reviewer accepts or edits fields. The checks re-run on the reviewed values, and **Download reviewed JSON** exports values, review status, and provenance.

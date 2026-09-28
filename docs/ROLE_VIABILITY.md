@@ -17,7 +17,7 @@ The key distinction in this package:
 | A working, publicly deployed tool that extracts, verifies, checks and supports review of plan documents | **Demonstrated** | [Production app](https://benefits-intake-qa.ayomideahmedcp.workers.dev/), [demo video](../demo/), [TEST_RESULTS.md](TEST_RESULTS.md) |
 | Page-level verbatim provenance, conflict surfacing and reviewer JSON export | **Demonstrated** | Tests T2–T7; `test/provenance.test.ts` |
 | An evaluation harness with thresholds, and honest limits on what it proves | **Demonstrated** | `npm run eval`; [TEST_PLAN.md](TEST_PLAN.md) §1 |
-| AI guardrails: AI never overwrites and never stores ungrounded values | **Demonstrated in unit tests only.** In production the configured model is deprecated, so the AI path currently falls back to rules | `test/engine.test.ts`; TEST_RESULTS T10 |
+| AI guardrails: AI never overwrites and never stores ungrounded values | **Demonstrated in unit tests, plus a three-call synthetic production spot-check (September 28, 2026).** Not evaluated for accuracy | `test/engine.test.ts`; TEST_RESULTS T10 |
 | Benefits implementation teams lose significant time and accuracy on PDF plan intake | **Hypothesis, not verified** | Inferred from the job post and general industry knowledge; no customer research was done |
 | Reviewers trust values more when they are linked to a page quote | **Hypothesis** | Needs interviews and a shadow test (PRD §10) |
 | The extraction accuracy would hold on real carrier documents | **Unknown.** Six synthetic cases cannot establish it | [ROADMAP.md](ROADMAP.md) gate G2 |
@@ -27,7 +27,7 @@ The key distinction in this package:
 | Role statement (quoted from the job post) | What this project shows | Gap / what it does not show |
 |---|---|---|
 | "Go deep on document analysis, extraction, and data input" | 18-field deterministic extraction; browser-side pdf.js with page boundaries; verbatim spans with offsets and a `verified` check | No OCR, tables or multi-plan documents; no real documents |
-| "Design and refine AI evaluation frameworks" | Golden-set eval with precision, recall, finding-recall and disposition thresholds that fail the build; an evidence-coverage invariant; AI kept only when grounded in a source quote | The golden set is small and not held out; no live AI eval (the model is deprecated in production) |
+| "Design and refine AI evaluation frameworks" | Golden-set eval with precision, recall, finding-recall and disposition thresholds that fail the build; an evidence-coverage invariant; AI kept only when grounded in a source quote | The golden set is small and not held out; no live AI eval (production AI has only a three-call synthetic spot-check) |
 | "engineer prompts across our product suite" | A single JSON-only extraction prompt with a deterministic fallback | No prompt iteration or evaluation against a model |
 | "track product analytics on live production data" | Not demonstrated. Metrics are proposed in PRD §9 (override rate, time-to-disposition) | No analytics instrumentation |
 | "owning the end-to-end implementation of our platform for enterprise clients, from onboarding through to live deployment" | Went from PRD to a deployed Cloudflare Worker to browser-verified production, with the reviewer workflow framed around implementation go-live dispositions | Not a client implementation; no stakeholders, data migration or on-site work |

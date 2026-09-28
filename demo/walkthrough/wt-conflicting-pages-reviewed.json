@@ -1,0 +1,466 @@
+{
+  "schema": "benefits-intake-qa/reviewed-plan@1",
+  "exported_at": "2026-09-28T09:26:35.606Z",
+  "disclaimer": "Independent prototype by Ayo Ahmed, not affiliated with Euphoric. Synthetic data only.",
+  "document": {
+    "name": "wt-conflicting-pages.pdf",
+    "input": "pdf",
+    "pages": 2
+  },
+  "review": {
+    "status": "complete",
+    "fields_reviewed": 18,
+    "fields_total": 18,
+    "extracted_disposition": "blocked",
+    "reviewed_disposition": "ready"
+  },
+  "fields": {
+    "employer_name": {
+      "value": "Tidewater Robotics",
+      "review_status": "accepted",
+      "extracted_value": "Tidewater Robotics",
+      "source": "rules",
+      "confidence": 0.9,
+      "page": 1,
+      "quote": "Employer: Tidewater Robotics",
+      "evidence": [
+        {
+          "page": 1,
+          "page_line": 3,
+          "quote": "Employer: Tidewater Robotics",
+          "start": 0,
+          "end": 28,
+          "line_text": "Employer: Tidewater Robotics",
+          "value": "Tidewater Robotics",
+          "verified": true
+        }
+      ],
+      "conflicts": null
+    },
+    "carrier": {
+      "value": "Evergreen Health Plans",
+      "review_status": "accepted",
+      "extracted_value": "Evergreen Health Plans",
+      "source": "rules",
+      "confidence": 0.9,
+      "page": 1,
+      "quote": "Carrier: Evergreen Health Plans",
+      "evidence": [
+        {
+          "page": 1,
+          "page_line": 4,
+          "quote": "Carrier: Evergreen Health Plans",
+          "start": 0,
+          "end": 31,
+          "line_text": "Carrier: Evergreen Health Plans",
+          "value": "Evergreen Health Plans",
+          "verified": true
+        }
+      ],
+      "conflicts": null
+    },
+    "plan_name": {
+      "value": "Evergreen Select HMO 600",
+      "review_status": "accepted",
+      "extracted_value": "Evergreen Select HMO 600",
+      "source": "rules",
+      "confidence": 0.85,
+      "page": 1,
+      "quote": "Plan Name: Evergreen Select HMO 600",
+      "evidence": [
+        {
+          "page": 1,
+          "page_line": 5,
+          "quote": "Plan Name: Evergreen Select HMO 600",
+          "start": 0,
+          "end": 35,
+          "line_text": "Plan Name: Evergreen Select HMO 600",
+          "value": "Evergreen Select HMO 600",
+          "verified": true
+        }
+      ],
+      "conflicts": null
+    },
+    "plan_type": {
+      "value": "HMO",
+      "review_status": "accepted",
+      "extracted_value": "HMO",
+      "source": "rules",
+      "confidence": 0.8,
+      "page": 1,
+      "quote": "Plan Type: HMO",
+      "evidence": [
+        {
+          "page": 1,
+          "page_line": 6,
+          "quote": "Plan Type: HMO",
+          "start": 0,
+          "end": 14,
+          "line_text": "Plan Type: HMO",
+          "value": "HMO",
+          "verified": true
+        },
+        {
+          "page": 1,
+          "page_line": 5,
+          "quote": "HMO",
+          "start": 28,
+          "end": 31,
+          "line_text": "Plan Name: Evergreen Select HMO 600",
+          "value": "HMO",
+          "verified": true
+        }
+      ],
+      "conflicts": null
+    },
+    "effective_date": {
+      "value": "2026-04-01",
+      "review_status": "accepted",
+      "extracted_value": "2026-04-01",
+      "source": "rules",
+      "confidence": 0.9,
+      "page": 1,
+      "quote": "Effective Date: 2026-04-01",
+      "evidence": [
+        {
+          "page": 1,
+          "page_line": 7,
+          "quote": "Effective Date: 2026-04-01",
+          "start": 0,
+          "end": 26,
+          "line_text": "Effective Date: 2026-04-01",
+          "value": "2026-04-01",
+          "verified": true
+        }
+      ],
+      "conflicts": null
+    },
+    "renewal_date": {
+      "value": "2027-03-31",
+      "review_status": "accepted",
+      "extracted_value": "2027-03-31",
+      "source": "rules",
+      "confidence": 0.85,
+      "page": 1,
+      "quote": "Renewal Date: 2027-03-31",
+      "evidence": [
+        {
+          "page": 1,
+          "page_line": 8,
+          "quote": "Renewal Date: 2027-03-31",
+          "start": 0,
+          "end": 24,
+          "line_text": "Renewal Date: 2027-03-31",
+          "value": "2027-03-31",
+          "verified": true
+        }
+      ],
+      "conflicts": null
+    },
+    "deductible_individual": {
+      "value": 900,
+      "review_status": "edited",
+      "extracted_value": 600,
+      "source": "rules",
+      "confidence": 0.55,
+      "page": 2,
+      "quote": "Deductible (individual): $900",
+      "evidence": [
+        {
+          "page": 1,
+          "page_line": 9,
+          "quote": "Deductible (individual): $600",
+          "start": 0,
+          "end": 29,
+          "line_text": "Deductible (individual): $600",
+          "value": 600,
+          "verified": true
+        },
+        {
+          "page": 2,
+          "page_line": 2,
+          "quote": "Deductible (individual): $900",
+          "start": 0,
+          "end": 29,
+          "line_text": "Deductible (individual): $900",
+          "value": 900,
+          "verified": true
+        }
+      ],
+      "conflicts": [
+        600,
+        900
+      ]
+    },
+    "deductible_family": {
+      "value": 1800,
+      "review_status": "edited",
+      "extracted_value": 1200,
+      "source": "rules",
+      "confidence": 0.55,
+      "page": 2,
+      "quote": "Deductible (family): $1,800",
+      "evidence": [
+        {
+          "page": 1,
+          "page_line": 10,
+          "quote": "Deductible (family): $1,200",
+          "start": 0,
+          "end": 27,
+          "line_text": "Deductible (family): $1,200",
+          "value": 1200,
+          "verified": true
+        },
+        {
+          "page": 2,
+          "page_line": 3,
+          "quote": "Deductible (family): $1,800",
+          "start": 0,
+          "end": 27,
+          "line_text": "Deductible (family): $1,800",
+          "value": 1800,
+          "verified": true
+        }
+      ],
+      "conflicts": [
+        1200,
+        1800
+      ]
+    },
+    "oop_max_individual": {
+      "value": 4000,
+      "review_status": "accepted",
+      "extracted_value": 4000,
+      "source": "rules",
+      "confidence": 0.85,
+      "page": 1,
+      "quote": "Out-of-pocket max (individual): $4,000",
+      "evidence": [
+        {
+          "page": 1,
+          "page_line": 11,
+          "quote": "Out-of-pocket max (individual): $4,000",
+          "start": 0,
+          "end": 38,
+          "line_text": "Out-of-pocket max (individual): $4,000",
+          "value": 4000,
+          "verified": true
+        }
+      ],
+      "conflicts": null
+    },
+    "oop_max_family": {
+      "value": 8000,
+      "review_status": "accepted",
+      "extracted_value": 8000,
+      "source": "rules",
+      "confidence": 0.85,
+      "page": 1,
+      "quote": "Out-of-pocket max (family): $8,000",
+      "evidence": [
+        {
+          "page": 1,
+          "page_line": 12,
+          "quote": "Out-of-pocket max (family): $8,000",
+          "start": 0,
+          "end": 34,
+          "line_text": "Out-of-pocket max (family): $8,000",
+          "value": 8000,
+          "verified": true
+        }
+      ],
+      "conflicts": null
+    },
+    "coinsurance_pct": {
+      "value": 10,
+      "review_status": "accepted",
+      "extracted_value": 10,
+      "source": "rules",
+      "confidence": 0.7,
+      "page": 1,
+      "quote": "Coinsurance: 10%",
+      "evidence": [
+        {
+          "page": 1,
+          "page_line": 13,
+          "quote": "Coinsurance: 10%",
+          "start": 0,
+          "end": 16,
+          "line_text": "Coinsurance: 10%",
+          "value": 10,
+          "verified": true
+        }
+      ],
+      "conflicts": null
+    },
+    "pcp_copay": {
+      "value": 20,
+      "review_status": "accepted",
+      "extracted_value": 20,
+      "source": "rules",
+      "confidence": 0.8,
+      "page": 2,
+      "quote": "Primary care copay $20",
+      "evidence": [
+        {
+          "page": 2,
+          "page_line": 6,
+          "quote": "Primary care copay $20",
+          "start": 0,
+          "end": 22,
+          "line_text": "Primary care copay $20",
+          "value": 20,
+          "verified": true
+        }
+      ],
+      "conflicts": null
+    },
+    "specialist_copay": {
+      "value": 45,
+      "review_status": "accepted",
+      "extracted_value": 45,
+      "source": "rules",
+      "confidence": 0.8,
+      "page": 2,
+      "quote": "Specialist copay $45",
+      "evidence": [
+        {
+          "page": 2,
+          "page_line": 5,
+          "quote": "Specialist copay $45",
+          "start": 0,
+          "end": 20,
+          "line_text": "Specialist copay $45",
+          "value": 45,
+          "verified": true
+        }
+      ],
+      "conflicts": null
+    },
+    "er_copay": {
+      "value": 250,
+      "review_status": "accepted",
+      "extracted_value": 250,
+      "source": "rules",
+      "confidence": 0.8,
+      "page": 1,
+      "quote": "Emergency Room: $250",
+      "evidence": [
+        {
+          "page": 1,
+          "page_line": 14,
+          "quote": "Emergency Room: $250",
+          "start": 0,
+          "end": 20,
+          "line_text": "Emergency Room: $250 copay",
+          "value": 250,
+          "verified": true
+        },
+        {
+          "page": 2,
+          "page_line": 4,
+          "quote": "Emergency room copay $250",
+          "start": 0,
+          "end": 25,
+          "line_text": "Emergency room copay $250",
+          "value": 250,
+          "verified": true
+        }
+      ],
+      "conflicts": null
+    },
+    "waiting_period_days": {
+      "value": 60,
+      "review_status": "accepted",
+      "extracted_value": 60,
+      "source": "rules",
+      "confidence": 0.75,
+      "page": 2,
+      "quote": "Waiting period: 60 days",
+      "evidence": [
+        {
+          "page": 2,
+          "page_line": 7,
+          "quote": "Waiting period: 60 days",
+          "start": 0,
+          "end": 23,
+          "line_text": "Waiting period: 60 days",
+          "value": 60,
+          "verified": true
+        }
+      ],
+      "conflicts": null
+    },
+    "eligibility_hours_per_week": {
+      "value": 30,
+      "review_status": "accepted",
+      "extracted_value": 30,
+      "source": "rules",
+      "confidence": 0.8,
+      "page": 2,
+      "quote": "30 hours per week",
+      "evidence": [
+        {
+          "page": 2,
+          "page_line": 8,
+          "quote": "30 hours per week",
+          "start": 13,
+          "end": 30,
+          "line_text": "Eligibility: 30 hours per week",
+          "value": 30,
+          "verified": true
+        }
+      ],
+      "conflicts": null
+    },
+    "employer_contribution_pct": {
+      "value": 70,
+      "review_status": "accepted",
+      "extracted_value": 70,
+      "source": "rules",
+      "confidence": 0.8,
+      "page": 2,
+      "quote": "Employer contribution: 70%",
+      "evidence": [
+        {
+          "page": 2,
+          "page_line": 9,
+          "quote": "Employer contribution: 70%",
+          "start": 0,
+          "end": 26,
+          "line_text": "Employer contribution: 70% of employee-only premium",
+          "value": 70,
+          "verified": true
+        }
+      ],
+      "conflicts": null
+    },
+    "hsa_eligible": {
+      "value": false,
+      "review_status": "accepted",
+      "extracted_value": false,
+      "source": "rules",
+      "confidence": 0.75,
+      "page": 2,
+      "quote": "HSA eligible: No",
+      "evidence": [
+        {
+          "page": 2,
+          "page_line": 10,
+          "quote": "HSA eligible: No",
+          "start": 0,
+          "end": 16,
+          "line_text": "HSA eligible: No",
+          "value": false,
+          "verified": true
+        }
+      ],
+      "conflicts": null
+    }
+  },
+  "findings": [],
+  "meta": {
+    "mode": "rules",
+    "ms": 0
+  }
+}
