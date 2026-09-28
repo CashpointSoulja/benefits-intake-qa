@@ -1,0 +1,21 @@
+Hi team, forwarding what the client sent over. Can we load this today?
+
+Group: Pinecrest Outfitters
+Insurer: Summit Mutual
+Plan: Summit Core PPO
+plan type: PPO
+Coverage begins Mar 1, 2026
+
+Ded: individual $1,000 / family $2,000
+Deductible family: $2,000
+Deductible individual: $1,000
+Out of pocket max individual $4,500
+Out of pocket max family $3,500
+Coinsurance: 20%
+PCP $25 copay
+Specialist $50 copay
+
+Eligibility: 30 hours/week
+Waiting period: first of the month following 30 days
+Company pays 80% EE premium
+HSA eligible: No

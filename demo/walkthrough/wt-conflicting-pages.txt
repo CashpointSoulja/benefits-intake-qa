@@ -1,0 +1,23 @@
+Page 1 of 2 — Plan Summary
+Employer: Tidewater Robotics
+Carrier: Evergreen Health Plans
+Plan Name: Evergreen Select HMO 600
+Plan Type: HMO
+Effective Date: 2026-04-01
+Renewal Date: 2027-03-31
+Deductible (individual): $600
+Deductible (family): $1,200
+Out-of-pocket max (individual): $4,000
+Out-of-pocket max (family): $8,000
+Coinsurance: 10%
+Emergency Room: $250 copay
+Page 2 of 2 — Rate Sheet Notes
+Deductible (individual): $900
+Deductible (family): $1,800
+Emergency room copay $250
+Specialist copay $45
+Primary care copay $20
+Waiting period: 60 days
+Eligibility: 30 hours per week
+Employer contribution: 70% of employee-only premium
+HSA eligible: No

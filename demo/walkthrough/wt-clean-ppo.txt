@@ -1,0 +1,23 @@
+BENEFITS IMPLEMENTATION INTAKE — MEDICAL
+Employer: Juniper Row Studios LLC
+Carrier: Blue Harbor Health
+Plan Name: Harbor Choice PPO 2000
+Plan Type: PPO
+Effective Date: 01/01/2026
+Renewal Date: 12/31/2026
+
+COST SHARING (IN-NETWORK)
+Deductible — Individual: $2,000
+Deductible — Family: $4,000
+Out-of-Pocket Maximum — Individual: $6,000
+Out-of-Pocket Maximum — Family: $12,000
+Coinsurance (member pays): 20%
+Primary Care Visit copay: $30
+Specialist Visit copay: $60
+Emergency Room copay: $300
+
+ELIGIBILITY
+Eligible class: full-time employees working 30 hours per week
+Waiting period: 30 days
+Employer contribution: 75% of employee-only premium
+HSA eligible: No

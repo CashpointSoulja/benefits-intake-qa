@@ -1,0 +1,1565 @@
+{
+ "wt-clean-ppo.pdf": {
+  "status_after_load": "Extracted 1 page(s) from wt-clean-ppo.pdf in your browser. Only the per-page text is sent to the API.",
+  "status": "Done in 0 ms (rules, 1 page(s)).",
+  "summary": "Extracted: Ready to load\n12/12 required fields\n0 error(s)\n0 warning(s)",
+  "findings": "No issues found. Spot-check the fields below and load.",
+  "fields": "FIELD\tVALUE & EVIDENCE\tREVIEW\nEmployer\nPENDING\nconf 0.90\n\t\np.1 \u00b7 line 3Employer: Juniper Row Studios LLC\n\tAccept\nCarrier\nPENDING\nconf 0.90\n\t\np.1 \u00b7 line 4Carrier: Blue Harbor Health\n\tAccept\nPlan name\nPENDING\nconf 0.85\n\t\np.1 \u00b7 line 5Plan Name: Harbor Choice PPO 2000\n\tAccept\nPlan type\nPENDING\nconf 0.80\n\t\np.1 \u00b7 line 6Plan Type: PPO\np.1 \u00b7 line 5PPO\n\tAccept\nEffective date\nPENDING\nconf 0.90\n\t\np.1 \u00b7 line 7Effective Date: 01/01/2026\n\tAccept\nRenewal date\nPENDING\nconf 0.85\n\t\np.1 \u00b7 line 8Renewal Date: 12/31/2026\n\tAccept\nDeductible (individual)\nPENDING\nconf 0.85\n\t\np.1 \u00b7 line 10Deductible \u2014 Individual: $2,000\n\tAccept\nDeductible (family)\nPENDING\nconf 0.85\n\t\np.1 \u00b7 line 11Deductible \u2014 Family: $4,000\n\tAccept\nOOP max (individual)\nPENDING\nconf 0.85\n\t\np.1 \u00b7 line 12Out-of-Pocket Maximum \u2014 Individual: $6,000\n\tAccept\nOOP max (family)\nPENDING\nconf 0.85\n\t\np.1 \u00b7 line 13Out-of-Pocket Maximum \u2014 Family: $12,000\n\tAccept\nCoinsurance (member %)\nPENDING\nconf 0.75\n\t\np.1 \u00b7 line 14Coinsurance (member pays): 20%\n\tAccept\nPCP copay\nPENDING\nconf 0.80\n\t\np.1 \u00b7 line 15Primary Care Visit copay: $30\n\tAccept\nSpecialist copay\nPENDING\nconf 0.80\n\t\np.1 \u00b7 line 16Specialist Visit copay: $60\n\tAccept\nER copay\nPENDING\nconf 0.80\n\t\np.1 \u00b7 line 17Emergency Room copay: $300\n\tAccept\nWaiting period (days)\nPENDING\nconf 0.75\n\t\np.1 \u00b7 line 20Waiting period: 30 days\n\tAccept\nEligibility (hrs/week)\nPENDING\nconf 0.80\n\t\np.1 \u00b7 line 1930 hours per week\n\tAccept\nEmployer contribution (%)\nPENDING\nconf 0.80\n\t\np.1 \u00b7 line 21Employer contribution: 75%\n\tAccept\nHSA eligible\nPENDING\nconf 0.75\n\t\np.1 \u00b7 line 22HSA eligible: No\n\tAccept",
+  "analyze_requests": 1,
+  "use_ai_flags": [
+   false
+  ],
+  "meta": {
+   "mode": "rules",
+   "ms": 0
+  },
+  "disposition": null,
+  "api": {
+   "extraction": {
+    "fields": {
+     "employer_name": {
+      "key": "employer_name",
+      "value": "Juniper Row Studios LLC",
+      "confidence": 0.9,
+      "evidence": [
+       {
+        "page": 1,
+        "page_line": 3,
+        "line": 2,
+        "quote": "Employer: Juniper Row Studios LLC",
+        "start": 0,
+        "end": 33,
+        "snippet": "Employer: Juniper Row Studios LLC",
+        "value": "Juniper Row Studios LLC",
+        "verified": true
+       }
+      ],
+      "source": "rules"
+     },
+     "carrier": {
+      "key": "carrier",
+      "value": "Blue Harbor Health",
+      "confidence": 0.9,
+      "evidence": [
+       {
+        "page": 1,
+        "page_line": 4,
+        "line": 3,
+        "quote": "Carrier: Blue Harbor Health",
+        "start": 0,
+        "end": 27,
+        "snippet": "Carrier: Blue Harbor Health",
+        "value": "Blue Harbor Health",
+        "verified": true
+       }
+      ],
+      "source": "rules"
+     },
+     "plan_name": {
+      "key": "plan_name",
+      "value": "Harbor Choice PPO 2000",
+      "confidence": 0.85,
+      "evidence": [
+       {
+        "page": 1,
+        "page_line": 5,
+        "line": 4,
+        "quote": "Plan Name: Harbor Choice PPO 2000",
+        "start": 0,
+        "end": 33,
+        "snippet": "Plan Name: Harbor Choice PPO 2000",
+        "value": "Harbor Choice PPO 2000",
+        "verified": true
+       }
+      ],
+      "source": "rules"
+     },
+     "plan_type": {
+      "key": "plan_type",
+      "value": "PPO",
+      "confidence": 0.8,
+      "evidence": [
+       {
+        "page": 1,
+        "page_line": 6,
+        "line": 5,
+        "quote": "Plan Type: PPO",
+        "start": 0,
+        "end": 14,
+        "snippet": "Plan Type: PPO",
+        "value": "PPO",
+        "verified": true
+       },
+       {
+        "page": 1,
+        "page_line": 5,
+        "line": 4,
+        "quote": "PPO",
+        "start": 25,
+        "end": 28,
+        "snippet": "Plan Name: Harbor Choice PPO 2000",
+        "value": "PPO",
+        "verified": true
+       }
+      ],
+      "source": "rules"
+     },
+     "effective_date": {
+      "key": "effective_date",
+      "value": "2026-01-01",
+      "confidence": 0.9,
+      "evidence": [
+       {
+        "page": 1,
+        "page_line": 7,
+        "line": 6,
+        "quote": "Effective Date: 01/01/2026",
+        "start": 0,
+        "end": 26,
+        "snippet": "Effective Date: 01/01/2026",
+        "value": "2026-01-01",
+        "verified": true
+       }
+      ],
+      "source": "rules"
+     },
+     "renewal_date": {
+      "key": "renewal_date",
+      "value": "2026-12-31",
+      "confidence": 0.85,
+      "evidence": [
+       {
+        "page": 1,
+        "page_line": 8,
+        "line": 7,
+        "quote": "Renewal Date: 12/31/2026",
+        "start": 0,
+        "end": 24,
+        "snippet": "Renewal Date: 12/31/2026",
+        "value": "2026-12-31",
+        "verified": true
+       }
+      ],
+      "source": "rules"
+     },
+     "deductible_individual": {
+      "key": "deductible_individual",
+      "value": 2000,
+      "confidence": 0.85,
+      "evidence": [
+       {
+        "page": 1,
+        "page_line": 10,
+        "line": 9,
+        "quote": "Deductible \u2014 Individual: $2,000",
+        "start": 0,
+        "end": 31,
+        "snippet": "Deductible \u2014 Individual: $2,000",
+        "value": 2000,
+        "verified": true
+       }
+      ],
+      "source": "rules"
+     },
+     "deductible_family": {
+      "key": "deductible_family",
+      "value": 4000,
+      "confidence": 0.85,
+      "evidence": [
+       {
+        "page": 1,
+        "page_line": 11,
+        "line": 10,
+        "quote": "Deductible \u2014 Family: $4,000",
+        "start": 0,
+        "end": 27,
+        "snippet": "Deductible \u2014 Family: $4,000",
+        "value": 4000,
+        "verified": true
+       }
+      ],
+      "source": "rules"
+     },
+     "oop_max_individual": {
+      "key": "oop_max_individual",
+      "value": 6000,
+      "confidence": 0.85,
+      "evidence": [
+       {
+        "page": 1,
+        "page_line": 12,
+        "line": 11,
+        "quote": "Out-of-Pocket Maximum \u2014 Individual: $6,000",
+        "start": 0,
+        "end": 42,
+        "snippet": "Out-of-Pocket Maximum \u2014 Individual: $6,000",
+        "value": 6000,
+        "verified": true
+       }
+      ],
+      "source": "rules"
+     },
+     "oop_max_family": {
+      "key": "oop_max_family",
+      "value": 12000,
+      "confidence": 0.85,
+      "evidence": [
+       {
+        "page": 1,
+        "page_line": 13,
+        "line": 12,
+        "quote": "Out-of-Pocket Maximum \u2014 Family: $12,000",
+        "start": 0,
+        "end": 39,
+        "snippet": "Out-of-Pocket Maximum \u2014 Family: $12,000",
+        "value": 12000,
+        "verified": true
+       }
+      ],
+      "source": "rules"
+     },
+     "coinsurance_pct": {
+      "key": "coinsurance_pct",
+      "value": 20,
+      "confidence": 0.75,
+      "evidence": [
+       {
+        "page": 1,
+        "page_line": 14,
+        "line": 13,
+        "quote": "Coinsurance (member pays): 20%",
+        "start": 0,
+        "end": 30,
+        "snippet": "Coinsurance (member pays): 20%",
+        "value": 20,
+        "verified": true
+       }
+      ],
+      "source": "rules"
+     },
+     "pcp_copay": {
+      "key": "pcp_copay",
+      "value": 30,
+      "confidence": 0.8,
+      "evidence": [
+       {
+        "page": 1,
+        "page_line": 15,
+        "line": 14,
+        "quote": "Primary Care Visit copay: $30",
+        "start": 0,
+        "end": 29,
+        "snippet": "Primary Care Visit copay: $30",
+        "value": 30,
+        "verified": true
+       }
+      ],
+      "source": "rules"
+     },
+     "specialist_copay": {
+      "key": "specialist_copay",
+      "value": 60,
+      "confidence": 0.8,
+      "evidence": [
+       {
+        "page": 1,
+        "page_line": 16,
+        "line": 15,
+        "quote": "Specialist Visit copay: $60",
+        "start": 0,
+        "end": 27,
+        "snippet": "Specialist Visit copay: $60",
+        "value": 60,
+        "verified": true
+       }
+      ],
+      "source": "rules"
+     },
+     "er_copay": {
+      "key": "er_copay",
+      "value": 300,
+      "confidence": 0.8,
+      "evidence": [
+       {
+        "page": 1,
+        "page_line": 17,
+        "line": 16,
+        "quote": "Emergency Room copay: $300",
+        "start": 0,
+        "end": 26,
+        "snippet": "Emergency Room copay: $300",
+        "value": 300,
+        "verified": true
+       }
+      ],
+      "source": "rules"
+     },
+     "waiting_period_days": {
+      "key": "waiting_period_days",
+      "value": 30,
+      "confidence": 0.75,
+      "evidence": [
+       {
+        "page": 1,
+        "page_line": 20,
+        "line": 19,
+        "quote": "Waiting period: 30 days",
+        "start": 0,
+        "end": 23,
+        "snippet": "Waiting period: 30 days",
+        "value": 30,
+        "verified": true
+       }
+      ],
+      "source": "rules"
+     },
+     "eligibility_hours_per_week": {
+      "key": "eligibility_hours_per_week",
+      "value": 30,
+      "confidence": 0.8,
+      "evidence": [
+       {
+        "page": 1,
+        "page_line": 19,
+        "line": 18,
+        "quote": "30 hours per week",
+        "start": 44,
+        "end": 61,
+        "snippet": "Eligible class: full-time employees working 30 hours per week",
+        "value": 30,
+        "verified": true
+       }
+      ],
+      "source": "rules"
+     },
+     "employer_contribution_pct": {
+      "key": "employer_contribution_pct",
+      "value": 75,
+      "confidence": 0.8,
+      "evidence": [
+       {
+        "page": 1,
+        "page_line": 21,
+        "line": 20,
+        "quote": "Employer contribution: 75%",
+        "start": 0,
+        "end": 26,
+        "snippet": "Employer contribution: 75% of employee-only premium",
+        "value": 75,
+        "verified": true
+       }
+      ],
+      "source": "rules"
+     },
+     "hsa_eligible": {
+      "key": "hsa_eligible",
+      "value": false,
+      "confidence": 0.75,
+      "evidence": [
+       {
+        "page": 1,
+        "page_line": 22,
+        "line": 21,
+        "quote": "HSA eligible: No",
+        "start": 0,
+        "end": 16,
+        "snippet": "HSA eligible: No",
+        "value": false,
+        "verified": true
+       }
+      ],
+      "source": "rules"
+     }
+    },
+    "lineCount": 22,
+    "pages": 1,
+    "lines": [
+     {
+      "page": 1,
+      "page_line": 1,
+      "text": "SYNTHETIC TEST DOCUMENT for Benefits Intake QA walkthrough (independent prototype by Ayo Ahmed). Fictional data."
+     },
+     {
+      "page": 1,
+      "page_line": 2,
+      "text": "BENEFITS IMPLEMENTATION INTAKE \u2014 MEDICAL"
+     },
+     {
+      "page": 1,
+      "page_line": 3,
+      "text": "Employer: Juniper Row Studios LLC"
+     },
+     {
+      "page": 1,
+      "page_line": 4,
+      "text": "Carrier: Blue Harbor Health"
+     },
+     {
+      "page": 1,
+      "page_line": 5,
+      "text": "Plan Name: Harbor Choice PPO 2000"
+     },
+     {
+      "page": 1,
+      "page_line": 6,
+      "text": "Plan Type: PPO"
+     },
+     {
+      "page": 1,
+      "page_line": 7,
+      "text": "Effective Date: 01/01/2026"
+     },
+     {
+      "page": 1,
+      "page_line": 8,
+      "text": "Renewal Date: 12/31/2026"
+     },
+     {
+      "page": 1,
+      "page_line": 9,
+      "text": "COST SHARING (IN-NETWORK)"
+     },
+     {
+      "page": 1,
+      "page_line": 10,
+      "text": "Deductible \u2014 Individual: $2,000"
+     },
+     {
+      "page": 1,
+      "page_line": 11,
+      "text": "Deductible \u2014 Family: $4,000"
+     },
+     {
+      "page": 1,
+      "page_line": 12,
+      "text": "Out-of-Pocket Maximum \u2014 Individual: $6,000"
+     },
+     {
+      "page": 1,
+      "page_line": 13,
+      "text": "Out-of-Pocket Maximum \u2014 Family: $12,000"
+     },
+     {
+      "page": 1,
+      "page_line": 14,
+      "text": "Coinsurance (member pays): 20%"
+     },
+     {
+      "page": 1,
+      "page_line": 15,
+      "text": "Primary Care Visit copay: $30"
+     },
+     {
+      "page": 1,
+      "page_line": 16,
+      "text": "Specialist Visit copay: $60"
+     },
+     {
+      "page": 1,
+      "page_line": 17,
+      "text": "Emergency Room copay: $300"
+     },
+     {
+      "page": 1,
+      "page_line": 18,
+      "text": "ELIGIBILITY"
+     },
+     {
+      "page": 1,
+      "page_line": 19,
+      "text": "Eligible class: full-time employees working 30 hours per week"
+     },
+     {
+      "page": 1,
+      "page_line": 20,
+      "text": "Waiting period: 30 days"
+     },
+     {
+      "page": 1,
+      "page_line": 21,
+      "text": "Employer contribution: 75% of employee-only premium"
+     },
+     {
+      "page": 1,
+      "page_line": 22,
+      "text": "HSA eligible: No"
+     }
+    ]
+   },
+   "findings": [],
+   "summary": {
+    "required_present": 12,
+    "required_total": 12,
+    "errors": 0,
+    "warnings": 0,
+    "disposition": "ready"
+   },
+   "meta": {
+    "mode": "rules",
+    "ms": 0
+   }
+  },
+  "api_paths": [
+   "/api/samples",
+   "/api/analyze"
+  ]
+ },
+ "wt-messy-family-oop.pdf": {
+  "status_after_load": "Extracted 1 page(s) from wt-messy-family-oop.pdf in your browser. Only the per-page text is sent to the API.",
+  "status": "Done in 0 ms (rules, 1 page(s)).",
+  "summary": "Extracted: Blocked\n12/12 required fields\n1 error(s)\n0 warning(s)",
+  "findings": "FAMILY_OOP_LT_INDIVIDUAL \u2014 Family out-of-pocket max ($3500) is lower than individual ($4500).\nAction: Values are likely swapped or mistyped; verify against the carrier summary.",
+  "fields": "FIELD\tVALUE & EVIDENCE\tREVIEW\nEmployer\nPENDING\nconf 0.90\n\t\np.1 \u00b7 line 3Group: Pinecrest Outfitters\n\tAccept\nCarrier\nPENDING\nconf 0.90\n\t\np.1 \u00b7 line 4Insurer: Summit Mutual\n\tAccept\nPlan name\nPENDING\nconf 0.85\n\t\np.1 \u00b7 line 5Plan: Summit Core PPO\n\tAccept\nPlan type\nPENDING\nconf 0.80\n\t\np.1 \u00b7 line 6plan type: PPO\np.1 \u00b7 line 5PPO\n\tAccept\nEffective date\nPENDING\nconf 0.90\n\t\np.1 \u00b7 line 7Coverage begins Mar 1, 2026\n\tAccept\nRenewal date\nPENDING\t\nNot found in the document (value is null).\n\tConfirm missing\nDeductible (individual)\nPENDING\nconf 0.85\n\t\np.1 \u00b7 line 10Deductible individual: $1,000\n\tAccept\nDeductible (family)\nPENDING\nconf 0.85\n\t\np.1 \u00b7 line 9Deductible family: $2,000\n\tAccept\nOOP max (individual)\nPENDING\nconf 0.85\n\t\np.1 \u00b7 line 11Out of pocket max individual $4,500\n\tAccept\nOOP max (family)\nPENDING\nconf 0.85\n\t\np.1 \u00b7 line 12Out of pocket max family $3,500\n\tAccept\nCoinsurance (member %)\nPENDING\nconf 0.70\n\t\np.1 \u00b7 line 13Coinsurance: 20%\n\tAccept\nPCP copay\nPENDING\nconf 0.80\n\t\np.1 \u00b7 line 14PCP $25\n\tAccept\nSpecialist copay\nPENDING\nconf 0.80\n\t\np.1 \u00b7 line 15Specialist $50\n\tAccept\nER copay\nPENDING\t\nNot found in the document (value is null).\n\tConfirm missing\nWaiting period (days)\nPENDING\nconf 0.80\n\t\np.1 \u00b7 line 17Waiting period: first of the month following 30 days\n\tAccept\nEligibility (hrs/week)\nPENDING\nconf 0.80\n\t\np.1 \u00b7 line 1630 hours/week\n\tAccept\nEmployer contribution (%)\nPENDING\nconf 0.75\n\t\np.1 \u00b7 line 18Company pays 80%\n\tAccept\nHSA eligible\nPENDING\nconf 0.75\n\t\np.1 \u00b7 line 19HSA eligible: No\n\tAccept",
+  "analyze_requests": 1,
+  "use_ai_flags": [
+   false
+  ],
+  "meta": {
+   "mode": "rules",
+   "ms": 0
+  },
+  "disposition": null,
+  "api": {
+   "extraction": {
+    "fields": {
+     "employer_name": {
+      "key": "employer_name",
+      "value": "Pinecrest Outfitters",
+      "confidence": 0.9,
+      "evidence": [
+       {
+        "page": 1,
+        "page_line": 3,
+        "line": 2,
+        "quote": "Group: Pinecrest Outfitters",
+        "start": 0,
+        "end": 27,
+        "snippet": "Group: Pinecrest Outfitters",
+        "value": "Pinecrest Outfitters",
+        "verified": true
+       }
+      ],
+      "source": "rules"
+     },
+     "carrier": {
+      "key": "carrier",
+      "value": "Summit Mutual",
+      "confidence": 0.9,
+      "evidence": [
+       {
+        "page": 1,
+        "page_line": 4,
+        "line": 3,
+        "quote": "Insurer: Summit Mutual",
+        "start": 0,
+        "end": 22,
+        "snippet": "Insurer: Summit Mutual",
+        "value": "Summit Mutual",
+        "verified": true
+       }
+      ],
+      "source": "rules"
+     },
+     "plan_name": {
+      "key": "plan_name",
+      "value": "Summit Core PPO",
+      "confidence": 0.85,
+      "evidence": [
+       {
+        "page": 1,
+        "page_line": 5,
+        "line": 4,
+        "quote": "Plan: Summit Core PPO",
+        "start": 0,
+        "end": 21,
+        "snippet": "Plan: Summit Core PPO",
+        "value": "Summit Core PPO",
+        "verified": true
+       }
+      ],
+      "source": "rules"
+     },
+     "plan_type": {
+      "key": "plan_type",
+      "value": "PPO",
+      "confidence": 0.8,
+      "evidence": [
+       {
+        "page": 1,
+        "page_line": 6,
+        "line": 5,
+        "quote": "plan type: PPO",
+        "start": 0,
+        "end": 14,
+        "snippet": "plan type: PPO",
+        "value": "PPO",
+        "verified": true
+       },
+       {
+        "page": 1,
+        "page_line": 5,
+        "line": 4,
+        "quote": "PPO",
+        "start": 18,
+        "end": 21,
+        "snippet": "Plan: Summit Core PPO",
+        "value": "PPO",
+        "verified": true
+       }
+      ],
+      "source": "rules"
+     },
+     "effective_date": {
+      "key": "effective_date",
+      "value": "2026-03-01",
+      "confidence": 0.9,
+      "evidence": [
+       {
+        "page": 1,
+        "page_line": 7,
+        "line": 6,
+        "quote": "Coverage begins Mar 1, 2026",
+        "start": 0,
+        "end": 27,
+        "snippet": "Coverage begins Mar 1, 2026",
+        "value": "2026-03-01",
+        "verified": true
+       }
+      ],
+      "source": "rules"
+     },
+     "renewal_date": {
+      "key": "renewal_date",
+      "value": null,
+      "confidence": 0,
+      "evidence": [],
+      "source": "rules"
+     },
+     "deductible_individual": {
+      "key": "deductible_individual",
+      "value": 1000,
+      "confidence": 0.85,
+      "evidence": [
+       {
+        "page": 1,
+        "page_line": 10,
+        "line": 9,
+        "quote": "Deductible individual: $1,000",
+        "start": 0,
+        "end": 29,
+        "snippet": "Deductible individual: $1,000",
+        "value": 1000,
+        "verified": true
+       }
+      ],
+      "source": "rules"
+     },
+     "deductible_family": {
+      "key": "deductible_family",
+      "value": 2000,
+      "confidence": 0.85,
+      "evidence": [
+       {
+        "page": 1,
+        "page_line": 9,
+        "line": 8,
+        "quote": "Deductible family: $2,000",
+        "start": 0,
+        "end": 25,
+        "snippet": "Deductible family: $2,000",
+        "value": 2000,
+        "verified": true
+       }
+      ],
+      "source": "rules"
+     },
+     "oop_max_individual": {
+      "key": "oop_max_individual",
+      "value": 4500,
+      "confidence": 0.85,
+      "evidence": [
+       {
+        "page": 1,
+        "page_line": 11,
+        "line": 10,
+        "quote": "Out of pocket max individual $4,500",
+        "start": 0,
+        "end": 35,
+        "snippet": "Out of pocket max individual $4,500",
+        "value": 4500,
+        "verified": true
+       }
+      ],
+      "source": "rules"
+     },
+     "oop_max_family": {
+      "key": "oop_max_family",
+      "value": 3500,
+      "confidence": 0.85,
+      "evidence": [
+       {
+        "page": 1,
+        "page_line": 12,
+        "line": 11,
+        "quote": "Out of pocket max family $3,500",
+        "start": 0,
+        "end": 31,
+        "snippet": "Out of pocket max family $3,500",
+        "value": 3500,
+        "verified": true
+       }
+      ],
+      "source": "rules"
+     },
+     "coinsurance_pct": {
+      "key": "coinsurance_pct",
+      "value": 20,
+      "confidence": 0.7,
+      "evidence": [
+       {
+        "page": 1,
+        "page_line": 13,
+        "line": 12,
+        "quote": "Coinsurance: 20%",
+        "start": 0,
+        "end": 16,
+        "snippet": "Coinsurance: 20%",
+        "value": 20,
+        "verified": true
+       }
+      ],
+      "source": "rules"
+     },
+     "pcp_copay": {
+      "key": "pcp_copay",
+      "value": 25,
+      "confidence": 0.8,
+      "evidence": [
+       {
+        "page": 1,
+        "page_line": 14,
+        "line": 13,
+        "quote": "PCP $25",
+        "start": 0,
+        "end": 7,
+        "snippet": "PCP $25 copay",
+        "value": 25,
+        "verified": true
+       }
+      ],
+      "source": "rules"
+     },
+     "specialist_copay": {
+      "key": "specialist_copay",
+      "value": 50,
+      "confidence": 0.8,
+      "evidence": [
+       {
+        "page": 1,
+        "page_line": 15,
+        "line": 14,
+        "quote": "Specialist $50",
+        "start": 0,
+        "end": 14,
+        "snippet": "Specialist $50 copay",
+        "value": 50,
+        "verified": true
+       }
+      ],
+      "source": "rules"
+     },
+     "er_copay": {
+      "key": "er_copay",
+      "value": null,
+      "confidence": 0,
+      "evidence": [],
+      "source": "rules"
+     },
+     "waiting_period_days": {
+      "key": "waiting_period_days",
+      "value": "first of the month following 30 days",
+      "confidence": 0.8,
+      "evidence": [
+       {
+        "page": 1,
+        "page_line": 17,
+        "line": 16,
+        "quote": "Waiting period: first of the month following 30 days",
+        "start": 0,
+        "end": 52,
+        "snippet": "Waiting period: first of the month following 30 days",
+        "value": "first of the month following 30 days",
+        "verified": true
+       }
+      ],
+      "source": "rules"
+     },
+     "eligibility_hours_per_week": {
+      "key": "eligibility_hours_per_week",
+      "value": 30,
+      "confidence": 0.8,
+      "evidence": [
+       {
+        "page": 1,
+        "page_line": 16,
+        "line": 15,
+        "quote": "30 hours/week",
+        "start": 13,
+        "end": 26,
+        "snippet": "Eligibility: 30 hours/week",
+        "value": 30,
+        "verified": true
+       }
+      ],
+      "source": "rules"
+     },
+     "employer_contribution_pct": {
+      "key": "employer_contribution_pct",
+      "value": 80,
+      "confidence": 0.75,
+      "evidence": [
+       {
+        "page": 1,
+        "page_line": 18,
+        "line": 17,
+        "quote": "Company pays 80%",
+        "start": 0,
+        "end": 16,
+        "snippet": "Company pays 80% EE premium",
+        "value": 80,
+        "verified": true
+       }
+      ],
+      "source": "rules"
+     },
+     "hsa_eligible": {
+      "key": "hsa_eligible",
+      "value": false,
+      "confidence": 0.75,
+      "evidence": [
+       {
+        "page": 1,
+        "page_line": 19,
+        "line": 18,
+        "quote": "HSA eligible: No",
+        "start": 0,
+        "end": 16,
+        "snippet": "HSA eligible: No",
+        "value": false,
+        "verified": true
+       }
+      ],
+      "source": "rules"
+     }
+    },
+    "lineCount": 19,
+    "pages": 1,
+    "lines": [
+     {
+      "page": 1,
+      "page_line": 1,
+      "text": "SYNTHETIC TEST DOCUMENT for Benefits Intake QA walkthrough (independent prototype by Ayo Ahmed). Fictional data."
+     },
+     {
+      "page": 1,
+      "page_line": 2,
+      "text": "Hi team, forwarding what the client sent over. Can we load this today?"
+     },
+     {
+      "page": 1,
+      "page_line": 3,
+      "text": "Group: Pinecrest Outfitters"
+     },
+     {
+      "page": 1,
+      "page_line": 4,
+      "text": "Insurer: Summit Mutual"
+     },
+     {
+      "page": 1,
+      "page_line": 5,
+      "text": "Plan: Summit Core PPO"
+     },
+     {
+      "page": 1,
+      "page_line": 6,
+      "text": "plan type: PPO"
+     },
+     {
+      "page": 1,
+      "page_line": 7,
+      "text": "Coverage begins Mar 1, 2026"
+     },
+     {
+      "page": 1,
+      "page_line": 8,
+      "text": "Ded: individual $1,000 / family $2,000"
+     },
+     {
+      "page": 1,
+      "page_line": 9,
+      "text": "Deductible family: $2,000"
+     },
+     {
+      "page": 1,
+      "page_line": 10,
+      "text": "Deductible individual: $1,000"
+     },
+     {
+      "page": 1,
+      "page_line": 11,
+      "text": "Out of pocket max individual $4,500"
+     },
+     {
+      "page": 1,
+      "page_line": 12,
+      "text": "Out of pocket max family $3,500"
+     },
+     {
+      "page": 1,
+      "page_line": 13,
+      "text": "Coinsurance: 20%"
+     },
+     {
+      "page": 1,
+      "page_line": 14,
+      "text": "PCP $25 copay"
+     },
+     {
+      "page": 1,
+      "page_line": 15,
+      "text": "Specialist $50 copay"
+     },
+     {
+      "page": 1,
+      "page_line": 16,
+      "text": "Eligibility: 30 hours/week"
+     },
+     {
+      "page": 1,
+      "page_line": 17,
+      "text": "Waiting period: first of the month following 30 days"
+     },
+     {
+      "page": 1,
+      "page_line": 18,
+      "text": "Company pays 80% EE premium"
+     },
+     {
+      "page": 1,
+      "page_line": 19,
+      "text": "HSA eligible: No"
+     }
+    ]
+   },
+   "findings": [
+    {
+     "code": "FAMILY_OOP_LT_INDIVIDUAL",
+     "severity": "error",
+     "message": "Family out-of-pocket max ($3500) is lower than individual ($4500).",
+     "fields": [
+      "oop_max_individual",
+      "oop_max_family"
+     ],
+     "action": "Values are likely swapped or mistyped; verify against the carrier summary."
+    }
+   ],
+   "summary": {
+    "required_present": 12,
+    "required_total": 12,
+    "errors": 1,
+    "warnings": 0,
+    "disposition": "blocked"
+   },
+   "meta": {
+    "mode": "rules",
+    "ms": 0
+   }
+  },
+  "api_paths": [
+   "/api/samples",
+   "/api/analyze"
+  ]
+ },
+ "wt-conflicting-pages.pdf": {
+  "status_after_load": "Extracted 2 page(s) from wt-conflicting-pages.pdf in your browser. Only the per-page text is sent to the API.",
+  "status": "Done in 0 ms (rules, 2 page(s)).",
+  "summary": "Extracted: Blocked\n12/12 required fields\n2 error(s)\n0 warning(s)",
+  "findings": "CONFLICTING_VALUES \u2014 Deductible (individual) appears with different values: 600 vs 900.\nAction: Confirm the authoritative value with the client; do not load until resolved.\nCONFLICTING_VALUES \u2014 Deductible (family) appears with different values: 1200 vs 1800.\nAction: Confirm the authoritative value with the client; do not load until resolved.",
+  "fields": "FIELD\tVALUE & EVIDENCE\tREVIEW\nEmployer\nPENDING\nconf 0.90\n\t\np.1 \u00b7 line 3Employer: Tidewater Robotics\n\tAccept\nCarrier\nPENDING\nconf 0.90\n\t\np.1 \u00b7 line 4Carrier: Evergreen Health Plans\n\tAccept\nPlan name\nPENDING\nconf 0.85\n\t\np.1 \u00b7 line 5Plan Name: Evergreen Select HMO 600\n\tAccept\nPlan type\nPENDING\nconf 0.80\n\t\np.1 \u00b7 line 6Plan Type: HMO\np.1 \u00b7 line 5HMO\n\tAccept\nEffective date\nPENDING\nconf 0.90\n\t\np.1 \u00b7 line 7Effective Date: 2026-04-01\n\tAccept\nRenewal date\nPENDING\nconf 0.85\n\t\np.1 \u00b7 line 8Renewal Date: 2027-03-31\n\tAccept\nDeductible (individual)\nPENDING\nconf 0.55\n\t\np.1 \u00b7 line 9Deductible (individual): $600 \u2192 600Use this\np.2 \u00b7 line 2Deductible (individual): $900 \u2192 900Use this\n\tAccept\nDeductible (family)\nPENDING\nconf 0.55\n\t\np.1 \u00b7 line 10Deductible (family): $1,200 \u2192 1200Use this\np.2 \u00b7 line 3Deductible (family): $1,800 \u2192 1800Use this\n\tAccept\nOOP max (individual)\nPENDING\nconf 0.85\n\t\np.1 \u00b7 line 11Out-of-pocket max (individual): $4,000\n\tAccept\nOOP max (family)\nPENDING\nconf 0.85\n\t\np.1 \u00b7 line 12Out-of-pocket max (family): $8,000\n\tAccept\nCoinsurance (member %)\nPENDING\nconf 0.70\n\t\np.1 \u00b7 line 13Coinsurance: 10%\n\tAccept\nPCP copay\nPENDING\nconf 0.80\n\t\np.2 \u00b7 line 6Primary care copay $20\n\tAccept\nSpecialist copay\nPENDING\nconf 0.80\n\t\np.2 \u00b7 line 5Specialist copay $45\n\tAccept\nER copay\nPENDING\nconf 0.80\n\t\np.1 \u00b7 line 14Emergency Room: $250\np.2 \u00b7 line 4Emergency room copay $250\n\tAccept\nWaiting period (days)\nPENDING\nconf 0.75\n\t\np.2 \u00b7 line 7Waiting period: 60 days\n\tAccept\nEligibility (hrs/week)\nPENDING\nconf 0.80\n\t\np.2 \u00b7 line 830 hours per week\n\tAccept\nEmployer contribution (%)\nPENDING\nconf 0.80\n\t\np.2 \u00b7 line 9Employer contribution: 70%\n\tAccept\nHSA eligible\nPENDING\nconf 0.75\n\t\np.2 \u00b7 line 10HSA eligible: No\n\tAccept",
+  "analyze_requests": 1,
+  "use_ai_flags": [
+   false
+  ],
+  "meta": {
+   "mode": "rules",
+   "ms": 0
+  },
+  "disposition": null,
+  "api": {
+   "extraction": {
+    "fields": {
+     "employer_name": {
+      "key": "employer_name",
+      "value": "Tidewater Robotics",
+      "confidence": 0.9,
+      "evidence": [
+       {
+        "page": 1,
+        "page_line": 3,
+        "line": 2,
+        "quote": "Employer: Tidewater Robotics",
+        "start": 0,
+        "end": 28,
+        "snippet": "Employer: Tidewater Robotics",
+        "value": "Tidewater Robotics",
+        "verified": true
+       }
+      ],
+      "source": "rules"
+     },
+     "carrier": {
+      "key": "carrier",
+      "value": "Evergreen Health Plans",
+      "confidence": 0.9,
+      "evidence": [
+       {
+        "page": 1,
+        "page_line": 4,
+        "line": 3,
+        "quote": "Carrier: Evergreen Health Plans",
+        "start": 0,
+        "end": 31,
+        "snippet": "Carrier: Evergreen Health Plans",
+        "value": "Evergreen Health Plans",
+        "verified": true
+       }
+      ],
+      "source": "rules"
+     },
+     "plan_name": {
+      "key": "plan_name",
+      "value": "Evergreen Select HMO 600",
+      "confidence": 0.85,
+      "evidence": [
+       {
+        "page": 1,
+        "page_line": 5,
+        "line": 4,
+        "quote": "Plan Name: Evergreen Select HMO 600",
+        "start": 0,
+        "end": 35,
+        "snippet": "Plan Name: Evergreen Select HMO 600",
+        "value": "Evergreen Select HMO 600",
+        "verified": true
+       }
+      ],
+      "source": "rules"
+     },
+     "plan_type": {
+      "key": "plan_type",
+      "value": "HMO",
+      "confidence": 0.8,
+      "evidence": [
+       {
+        "page": 1,
+        "page_line": 6,
+        "line": 5,
+        "quote": "Plan Type: HMO",
+        "start": 0,
+        "end": 14,
+        "snippet": "Plan Type: HMO",
+        "value": "HMO",
+        "verified": true
+       },
+       {
+        "page": 1,
+        "page_line": 5,
+        "line": 4,
+        "quote": "HMO",
+        "start": 28,
+        "end": 31,
+        "snippet": "Plan Name: Evergreen Select HMO 600",
+        "value": "HMO",
+        "verified": true
+       }
+      ],
+      "source": "rules"
+     },
+     "effective_date": {
+      "key": "effective_date",
+      "value": "2026-04-01",
+      "confidence": 0.9,
+      "evidence": [
+       {
+        "page": 1,
+        "page_line": 7,
+        "line": 6,
+        "quote": "Effective Date: 2026-04-01",
+        "start": 0,
+        "end": 26,
+        "snippet": "Effective Date: 2026-04-01",
+        "value": "2026-04-01",
+        "verified": true
+       }
+      ],
+      "source": "rules"
+     },
+     "renewal_date": {
+      "key": "renewal_date",
+      "value": "2027-03-31",
+      "confidence": 0.85,
+      "evidence": [
+       {
+        "page": 1,
+        "page_line": 8,
+        "line": 7,
+        "quote": "Renewal Date: 2027-03-31",
+        "start": 0,
+        "end": 24,
+        "snippet": "Renewal Date: 2027-03-31",
+        "value": "2027-03-31",
+        "verified": true
+       }
+      ],
+      "source": "rules"
+     },
+     "deductible_individual": {
+      "key": "deductible_individual",
+      "value": 600,
+      "confidence": 0.55,
+      "evidence": [
+       {
+        "page": 1,
+        "page_line": 9,
+        "line": 8,
+        "quote": "Deductible (individual): $600",
+        "start": 0,
+        "end": 29,
+        "snippet": "Deductible (individual): $600",
+        "value": 600,
+        "verified": true
+       },
+       {
+        "page": 2,
+        "page_line": 2,
+        "line": 15,
+        "quote": "Deductible (individual): $900",
+        "start": 0,
+        "end": 29,
+        "snippet": "Deductible (individual): $900",
+        "value": 900,
+        "verified": true
+       }
+      ],
+      "conflicts": [
+       600,
+       900
+      ],
+      "source": "rules"
+     },
+     "deductible_family": {
+      "key": "deductible_family",
+      "value": 1200,
+      "confidence": 0.55,
+      "evidence": [
+       {
+        "page": 1,
+        "page_line": 10,
+        "line": 9,
+        "quote": "Deductible (family): $1,200",
+        "start": 0,
+        "end": 27,
+        "snippet": "Deductible (family): $1,200",
+        "value": 1200,
+        "verified": true
+       },
+       {
+        "page": 2,
+        "page_line": 3,
+        "line": 16,
+        "quote": "Deductible (family): $1,800",
+        "start": 0,
+        "end": 27,
+        "snippet": "Deductible (family): $1,800",
+        "value": 1800,
+        "verified": true
+       }
+      ],
+      "conflicts": [
+       1200,
+       1800
+      ],
+      "source": "rules"
+     },
+     "oop_max_individual": {
+      "key": "oop_max_individual",
+      "value": 4000,
+      "confidence": 0.85,
+      "evidence": [
+       {
+        "page": 1,
+        "page_line": 11,
+        "line": 10,
+        "quote": "Out-of-pocket max (individual): $4,000",
+        "start": 0,
+        "end": 38,
+        "snippet": "Out-of-pocket max (individual): $4,000",
+        "value": 4000,
+        "verified": true
+       }
+      ],
+      "source": "rules"
+     },
+     "oop_max_family": {
+      "key": "oop_max_family",
+      "value": 8000,
+      "confidence": 0.85,
+      "evidence": [
+       {
+        "page": 1,
+        "page_line": 12,
+        "line": 11,
+        "quote": "Out-of-pocket max (family): $8,000",
+        "start": 0,
+        "end": 34,
+        "snippet": "Out-of-pocket max (family): $8,000",
+        "value": 8000,
+        "verified": true
+       }
+      ],
+      "source": "rules"
+     },
+     "coinsurance_pct": {
+      "key": "coinsurance_pct",
+      "value": 10,
+      "confidence": 0.7,
+      "evidence": [
+       {
+        "page": 1,
+        "page_line": 13,
+        "line": 12,
+        "quote": "Coinsurance: 10%",
+        "start": 0,
+        "end": 16,
+        "snippet": "Coinsurance: 10%",
+        "value": 10,
+        "verified": true
+       }
+      ],
+      "source": "rules"
+     },
+     "pcp_copay": {
+      "key": "pcp_copay",
+      "value": 20,
+      "confidence": 0.8,
+      "evidence": [
+       {
+        "page": 2,
+        "page_line": 6,
+        "line": 19,
+        "quote": "Primary care copay $20",
+        "start": 0,
+        "end": 22,
+        "snippet": "Primary care copay $20",
+        "value": 20,
+        "verified": true
+       }
+      ],
+      "source": "rules"
+     },
+     "specialist_copay": {
+      "key": "specialist_copay",
+      "value": 45,
+      "confidence": 0.8,
+      "evidence": [
+       {
+        "page": 2,
+        "page_line": 5,
+        "line": 18,
+        "quote": "Specialist copay $45",
+        "start": 0,
+        "end": 20,
+        "snippet": "Specialist copay $45",
+        "value": 45,
+        "verified": true
+       }
+      ],
+      "source": "rules"
+     },
+     "er_copay": {
+      "key": "er_copay",
+      "value": 250,
+      "confidence": 0.8,
+      "evidence": [
+       {
+        "page": 1,
+        "page_line": 14,
+        "line": 13,
+        "quote": "Emergency Room: $250",
+        "start": 0,
+        "end": 20,
+        "snippet": "Emergency Room: $250 copay",
+        "value": 250,
+        "verified": true
+       },
+       {
+        "page": 2,
+        "page_line": 4,
+        "line": 17,
+        "quote": "Emergency room copay $250",
+        "start": 0,
+        "end": 25,
+        "snippet": "Emergency room copay $250",
+        "value": 250,
+        "verified": true
+       }
+      ],
+      "source": "rules"
+     },
+     "waiting_period_days": {
+      "key": "waiting_period_days",
+      "value": 60,
+      "confidence": 0.75,
+      "evidence": [
+       {
+        "page": 2,
+        "page_line": 7,
+        "line": 20,
+        "quote": "Waiting period: 60 days",
+        "start": 0,
+        "end": 23,
+        "snippet": "Waiting period: 60 days",
+        "value": 60,
+        "verified": true
+       }
+      ],
+      "source": "rules"
+     },
+     "eligibility_hours_per_week": {
+      "key": "eligibility_hours_per_week",
+      "value": 30,
+      "confidence": 0.8,
+      "evidence": [
+       {
+        "page": 2,
+        "page_line": 8,
+        "line": 21,
+        "quote": "30 hours per week",
+        "start": 13,
+        "end": 30,
+        "snippet": "Eligibility: 30 hours per week",
+        "value": 30,
+        "verified": true
+       }
+      ],
+      "source": "rules"
+     },
+     "employer_contribution_pct": {
+      "key": "employer_contribution_pct",
+      "value": 70,
+      "confidence": 0.8,
+      "evidence": [
+       {
+        "page": 2,
+        "page_line": 9,
+        "line": 22,
+        "quote": "Employer contribution: 70%",
+        "start": 0,
+        "end": 26,
+        "snippet": "Employer contribution: 70% of employee-only premium",
+        "value": 70,
+        "verified": true
+       }
+      ],
+      "source": "rules"
+     },
+     "hsa_eligible": {
+      "key": "hsa_eligible",
+      "value": false,
+      "confidence": 0.75,
+      "evidence": [
+       {
+        "page": 2,
+        "page_line": 10,
+        "line": 23,
+        "quote": "HSA eligible: No",
+        "start": 0,
+        "end": 16,
+        "snippet": "HSA eligible: No",
+        "value": false,
+        "verified": true
+       }
+      ],
+      "source": "rules"
+     }
+    },
+    "lineCount": 24,
+    "pages": 2,
+    "lines": [
+     {
+      "page": 1,
+      "page_line": 1,
+      "text": "SYNTHETIC TEST DOCUMENT for Benefits Intake QA walkthrough (independent prototype by Ayo Ahmed). Fictional data."
+     },
+     {
+      "page": 1,
+      "page_line": 2,
+      "text": "Page 1 of 2 \u2014 Plan Summary"
+     },
+     {
+      "page": 1,
+      "page_line": 3,
+      "text": "Employer: Tidewater Robotics"
+     },
+     {
+      "page": 1,
+      "page_line": 4,
+      "text": "Carrier: Evergreen Health Plans"
+     },
+     {
+      "page": 1,
+      "page_line": 5,
+      "text": "Plan Name: Evergreen Select HMO 600"
+     },
+     {
+      "page": 1,
+      "page_line": 6,
+      "text": "Plan Type: HMO"
+     },
+     {
+      "page": 1,
+      "page_line": 7,
+      "text": "Effective Date: 2026-04-01"
+     },
+     {
+      "page": 1,
+      "page_line": 8,
+      "text": "Renewal Date: 2027-03-31"
+     },
+     {
+      "page": 1,
+      "page_line": 9,
+      "text": "Deductible (individual): $600"
+     },
+     {
+      "page": 1,
+      "page_line": 10,
+      "text": "Deductible (family): $1,200"
+     },
+     {
+      "page": 1,
+      "page_line": 11,
+      "text": "Out-of-pocket max (individual): $4,000"
+     },
+     {
+      "page": 1,
+      "page_line": 12,
+      "text": "Out-of-pocket max (family): $8,000"
+     },
+     {
+      "page": 1,
+      "page_line": 13,
+      "text": "Coinsurance: 10%"
+     },
+     {
+      "page": 1,
+      "page_line": 14,
+      "text": "Emergency Room: $250 copay"
+     },
+     {
+      "page": 2,
+      "page_line": 1,
+      "text": "Page 2 of 2 \u2014 Rate Sheet Notes"
+     },
+     {
+      "page": 2,
+      "page_line": 2,
+      "text": "Deductible (individual): $900"
+     },
+     {
+      "page": 2,
+      "page_line": 3,
+      "text": "Deductible (family): $1,800"
+     },
+     {
+      "page": 2,
+      "page_line": 4,
+      "text": "Emergency room copay $250"
+     },
+     {
+      "page": 2,
+      "page_line": 5,
+      "text": "Specialist copay $45"
+     },
+     {
+      "page": 2,
+      "page_line": 6,
+      "text": "Primary care copay $20"
+     },
+     {
+      "page": 2,
+      "page_line": 7,
+      "text": "Waiting period: 60 days"
+     },
+     {
+      "page": 2,
+      "page_line": 8,
+      "text": "Eligibility: 30 hours per week"
+     },
+     {
+      "page": 2,
+      "page_line": 9,
+      "text": "Employer contribution: 70% of employee-only premium"
+     },
+     {
+      "page": 2,
+      "page_line": 10,
+      "text": "HSA eligible: No"
+     }
+    ]
+   },
+   "findings": [
+    {
+     "code": "CONFLICTING_VALUES",
+     "severity": "error",
+     "message": "Deductible (individual) appears with different values: 600 vs 900.",
+     "fields": [
+      "deductible_individual"
+     ],
+     "action": "Confirm the authoritative value with the client; do not load until resolved."
+    },
+    {
+     "code": "CONFLICTING_VALUES",
+     "severity": "error",
+     "message": "Deductible (family) appears with different values: 1200 vs 1800.",
+     "fields": [
+      "deductible_family"
+     ],
+     "action": "Confirm the authoritative value with the client; do not load until resolved."
+    }
+   ],
+   "summary": {
+    "required_present": 12,
+    "required_total": 12,
+    "errors": 2,
+    "warnings": 0,
+    "disposition": "blocked"
+   },
+   "meta": {
+    "mode": "rules",
+    "ms": 0
+   }
+  },
+  "api_paths": [
+   "/api/samples",
+   "/api/analyze"
+  ]
+ },
+ "wt-scanned-image-only.pdf": {
+  "status_after_load": "Could not read wt-scanned-image-only.pdf: no text layer found. This looks like a scanned PDF, and OCR is out of scope for v0.1",
+  "api_paths": [
+   "/api/samples"
+  ]
+ }
+}

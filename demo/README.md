@@ -10,3 +10,9 @@ It shows:
 5. Download reviewed JSON, with the file opened.
 
 `frames/contact-*.jpg` are frame contact sheets (one frame about every 5 s), used to check legibility and that only the production site is shown.
+
+## Rules-only walkthrough (September 28, 2026)
+
+`benefits-intake-qa-walkthrough.mp4` (98 s, H.264, 1600×1200, ~5 MB) is a real Chrome recording of the production site. Idle pauses were trimmed; nothing was staged. The OpenAI option stayed off and no AI call was made. It shows three synthetic PDFs (clean: Ready; family OOP below individual: Blocked; conflicting pages: Blocked), a reviewer choosing the p.2 quotes, After review changing to Ready, the reviewed JSON export, and the published PRD, test plan, test results (T11 accessibility **Fail**) and roadmap.
+
+`walkthrough/` holds the synthetic source documents, the production verification output (`verify-results.json`, rerun rules-only on September 28, 2026), the reviewed JSON exports, the frame contact sheet, and a screenshot of the image-only PDF being rejected (not in the video). See `walkthrough/WALKTHROUGH_RESULTS.md`.
