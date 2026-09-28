@@ -6,6 +6,8 @@
 
 `benefits-intake-qa-launch-vertical.mp4` is 96 s at 1080×1920, 30 fps, H.264, with no audio track. Rendered from the `Vertical` composition in `launch/remotion/src/Vertical.tsx`. It reframes the real 1600×1200 production walkthrough for a portrait canvas, moving between targeted UI crops and large evidence labels for the family OOP inversion, both p.1/p.2 deductible conflicts, the reviewer’s p.2 choice, After review Ready, the synthetic evaluation caveat and T11 Fail. The AI segment uses the original 1080×1920 production recording from September 27 (`benefits-intake-qa-ai-archive-9x16.mp4`), explicitly labelled archive; it makes no new call. No UI or outcome is staged. The independent-prototype attribution is visible throughout.
 
+The chapter wipes mark new ideas; shorter dissolves link evidence within each idea. Page quotes, reviewer choices and caveats enter in the order they are discussed in the voiceover. Camera moves between source regions use eased crop interpolation, while the footage and original 96-second cue boundaries remain intact.
+
 Rebuild (Node 22, ffmpeg and Chrome/Remotion headless browser):
 
 ```bash

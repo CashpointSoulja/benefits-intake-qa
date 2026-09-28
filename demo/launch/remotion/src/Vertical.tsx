@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   AbsoluteFill, Easing, Img, OffthreadVideo, Sequence, interpolate,
-  spring, staticFile, useCurrentFrame, useVideoConfig,
+  staticFile, useCurrentFrame,
 } from 'remotion';
 
 const FPS = 30;
@@ -10,6 +10,19 @@ const INK = '#1D1D1B';
 const CREAM = '#FFF7EF';
 const FONT = '"Liberation Sans", "DejaVu Sans", Arial, sans-serif';
 const MONO = '"DejaVu Sans Mono", monospace';
+const easeOut = Easing.bezier(0.22, 1, 0.36, 1);
+const easeInOut = Easing.bezier(0.76, 0, 0.24, 1);
+
+const progress = (frame: number, from: number, duration = 20) =>
+  interpolate(frame, [from, from + duration], [0, 1], {
+    easing: easeOut, extrapolateLeft: 'clamp', extrapolateRight: 'clamp',
+  });
+
+const Reveal: React.FC<{children: React.ReactNode; delay?: number; distance?: number}> =
+  ({children, delay = 0, distance = 32}) => {
+    const p = progress(useCurrentFrame(), delay);
+    return <div style={{opacity: p, transform: `translateY(${(1 - p) * distance}px)`}}>{children}</div>;
+  };
 
 type Crop = {at: number; x: number; y: number; w: number; h: number};
 
@@ -19,7 +32,7 @@ const interpolateCrop = (keys: Crop[], t: number): Crop => {
     if (t <= keys[i].at) {
       const a = keys[i - 1];
       const b = keys[i];
-      const p = Easing.bezier(0.65, 0, 0.35, 1)((t - a.at) / (b.at - a.at));
+      const p = easeInOut((t - a.at) / (b.at - a.at));
       return {at: t, x: a.x + (b.x - a.x) * p, y: a.y + (b.y - a.y) * p,
         w: a.w + (b.w - a.w) * p, h: a.h + (b.h - a.h) * p};
     }
@@ -33,13 +46,15 @@ const Source: React.FC<{
 }> = ({src, from, width, height, crop, label, playbackRate = 1}) => {
   const f = useCurrentFrame();
   const c = interpolateCrop(crop, f / FPS);
+  const enter = progress(f, 7, 24);
   const scale = Math.min(960 / c.w, 1000 / c.h);
   const x = 480 - (c.x + c.w / 2) * scale;
   const y = 500 - (c.y + c.h / 2) * scale;
   return (
     <div style={{position: 'absolute', top: 490, left: 60, width: 960, height: 1000,
       borderRadius: 30, overflow: 'hidden', background: '#211f1d', border: '3px solid #f6c5a5',
-      boxShadow: '0 28px 65px rgba(29,29,27,.22)'}}>
+      boxShadow: '0 28px 65px rgba(29,29,27,.22)', opacity: enter,
+      transform: `translateY(${(1 - enter) * 54}px) scale(${0.965 + enter * 0.035})`}}>
       <div style={{position: 'absolute', width, height, transformOrigin: '0 0',
         transform: `translate(${x}px, ${y}px) scale(${scale})`}}>
         <OffthreadVideo src={staticFile(src)} startFrom={Math.round(from * FPS)} playbackRate={playbackRate} muted
@@ -64,23 +79,20 @@ const Frame: React.FC<{
   dark?: boolean; orange?: boolean;
 }> = ({eyebrow, title, detail, children, dark, orange}) => {
   const f = useCurrentFrame();
-  const {fps} = useVideoConfig();
-  const p = spring({frame: f, fps, config: {damping: 200}});
   const background = orange ? ORANGE : dark ? INK : CREAM;
   const foreground = dark ? '#fff' : INK;
   return (
     <AbsoluteFill style={{background, color: foreground, fontFamily: FONT}}>
       <div style={{position: 'absolute', width: 800, height: 800, right: -420, top: -460,
         border: `90px solid ${dark ? '#343330' : orange ? '#fb904f' : '#ffe7d4'}`,
-        borderRadius: '50%'}} />
-      <div style={{position: 'absolute', top: 88, left: 60, right: 60,
-        transform: `translateY(${(1 - p) * 35}px)`, opacity: p}}>
-        <div style={{color: dark ? '#ff995b' : orange ? INK : '#af410e', fontSize: 30,
-          fontWeight: 800, letterSpacing: 3, textTransform: 'uppercase'}}>{eyebrow}</div>
-        <div style={{fontSize: 78, lineHeight: 1.04, fontWeight: 800, marginTop: 22,
-          letterSpacing: -2}}>{title}</div>
-        {detail && <div style={{fontSize: 37, lineHeight: 1.25, marginTop: 22,
-          maxWidth: 960}}>{detail}</div>}
+        borderRadius: '50%', transform: `translate(${f * -0.09}px, ${f * 0.12}px)`}} />
+      <div style={{position: 'absolute', top: 88, left: 60, right: 60}}>
+        <Reveal delay={2} distance={14}><div style={{color: dark ? '#ff995b' : orange ? INK : '#af410e', fontSize: 30,
+          fontWeight: 800, letterSpacing: 3, textTransform: 'uppercase'}}>{eyebrow}</div></Reveal>
+        <Reveal delay={8}><div style={{fontSize: 78, lineHeight: 1.04, fontWeight: 800, marginTop: 22,
+          letterSpacing: -2}}>{title}</div></Reveal>
+        {detail && <Reveal delay={17} distance={22}><div style={{fontSize: 37, lineHeight: 1.25, marginTop: 22,
+          maxWidth: 960}}>{detail}</div></Reveal>}
       </div>
       {children}
       <Attribution light={dark} />
@@ -88,12 +100,28 @@ const Frame: React.FC<{
   );
 };
 
-const Card: React.FC<{children: React.ReactNode; top: number; color?: string}> =
-  ({children, top, color = '#fff'}) => (
+const Card: React.FC<{children: React.ReactNode; top: number; color?: string; delay?: number}> =
+  ({children, top, color = '#fff', delay = 20}) => {
+    const p = progress(useCurrentFrame(), delay, 24);
+    return (
     <div style={{position: 'absolute', top, left: 60, width: 960, boxSizing: 'border-box',
       background: color, borderRadius: 26, padding: '40px 44px', fontSize: 48,
-      lineHeight: 1.24, boxShadow: '0 18px 45px rgba(29,29,27,.14)'}}>{children}</div>
-  );
+      lineHeight: 1.24, boxShadow: '0 18px 45px rgba(29,29,27,.14)',
+      opacity: p, transform: `translateY(${(1 - p) * 42}px)`}}>{children}</div>
+    );
+  };
+
+const Evidence: React.FC<{children: React.ReactNode; delay?: number; accent?: boolean; top?: number; size?: number}> =
+  ({children, delay = 36, accent = false, top = 1510, size = 39}) => {
+    const f = useCurrentFrame();
+    const p = progress(f, delay, 22);
+    return <div style={{position: 'absolute', top, left: 60, right: 60, fontSize: size,
+      fontWeight: 800, lineHeight: 1.22, color: accent ? '#ad3019' : 'inherit',
+      opacity: p, transform: `translateY(${(1 - p) * 24}px)`}}>
+      <div style={{width: 90 * p, height: 5, background: ORANGE, marginBottom: 18}} />
+      {children}
+    </div>;
+  };
 
 const Title: React.FC = () => {
   const f = useCurrentFrame();
@@ -102,9 +130,10 @@ const Title: React.FC = () => {
     <Frame eyebrow="Production demo · rules first" title="Benefits Intake QA"
       detail="Catch plan-data errors before go-live. Trace every value to a page and quote." orange>
       <div style={{position: 'absolute', top: 740, left: 80, fontSize: 370, color: 'rgba(255,255,255,.23)',
-        transform: `rotate(${spin}deg)`}}>✳</div>
+        transform: `rotate(${spin}deg) scale(${0.88 + progress(f, 12, 35) * 0.12})`}}>✳</div>
       <div style={{position: 'absolute', top: 1130, left: 60, right: 60, background: 'rgba(255,255,255,.88)',
-        borderRadius: 30, padding: 38, fontSize: 38, fontWeight: 700, lineHeight: 1.25}}>
+        borderRadius: 30, padding: 38, fontSize: 38, fontWeight: 700, lineHeight: 1.25,
+        opacity: progress(f, 46), transform: `translateY(${(1 - progress(f, 46)) * 42}px)`}}>
         Real production recording · synthetic plan PDFs · silent cut
       </div>
       <div style={{position: 'absolute', top: 1430, left: 60, fontSize: 29}}>
@@ -117,9 +146,9 @@ const Title: React.FC = () => {
 const Problem: React.FC = () => (
   <Frame eyebrow="The problem · a hypothesis" title="One wrong number. A real go-live risk."
     detail="Plan PDFs can contradict themselves. A reviewer needs to see the source before loading values." dark>
-    <Card top={725} color="#363533">01 · Extract a value and its exact quote.</Card>
-    <Card top={980} color="#363533">02 · Flag contradictions and impossible limits.</Card>
-    <Card top={1305} color="#363533">03 · Let a human decide what to load.</Card>
+    <Card top={725} color="#363533" delay={20}>01 · Extract a value and its exact quote.</Card>
+    <Card top={980} color="#363533" delay={52}>02 · Flag contradictions and impossible limits.</Card>
+    <Card top={1305} color="#363533" delay={84}>03 · Let a human decide what to load.</Card>
     <div style={{position: 'absolute', bottom: 140, left: 60, right: 60, fontSize: 27}}>
       Framed from a published job description; not verified customer research.
     </div>
@@ -133,8 +162,8 @@ const OopQuote: React.FC = () => (
       crop={[{at: 0, x: 760, y: 320, w: 620, h: 300},
         {at: 2, x: 760, y: 320, w: 620, h: 300},
         {at: 7, x: 780, y: 355, w: 580, h: 420}]} />
-    <div style={{position: 'absolute', top: 1510, left: 60, right: 60,
-      fontSize: 39, fontWeight: 800}}>p.1 · individual $4,500 / family $3,500</div>
+    <Evidence delay={40} top={1502}>p.1 · Individual max $4,500</Evidence>
+    <Evidence delay={90} top={1606} accent>p.1 · Family max $3,500 ↓</Evidence>
   </Frame>
 );
 
@@ -144,8 +173,7 @@ const OopFinding: React.FC = () => (
     <Source src="benefits-intake-qa-walkthrough.mp4" from={25.7} width={1600} height={1200} playbackRate={0.72} label="Production capture · rules only"
       crop={[{at: 0, x: 780, y: 860, w: 580, h: 320},
         {at: 7, x: 780, y: 860, w: 580, h: 320}]} />
-    <div style={{position: 'absolute', top: 1510, left: 60, right: 60, fontSize: 35,
-      color: '#ad3019', fontWeight: 800}}>BLOCKED · FAMILY_OOP_LT_INDIVIDUAL</div>
+    <Evidence delay={48} size={35} accent>BLOCKED · FAMILY_OOP_LT_INDIVIDUAL</Evidence>
   </Frame>
 );
 
@@ -155,8 +183,7 @@ const ConflictStatus: React.FC = () => (
     <Source src="benefits-intake-qa-walkthrough.mp4" from={38.5} width={1600} height={1200} label="Production capture · 2 source pages"
       crop={[{at: 0, x: 400, y: 200, w: 990, h: 610},
         {at: 6, x: 400, y: 200, w: 990, h: 610}]} />
-    <div style={{position: 'absolute', top: 1510, left: 60, fontSize: 37, fontWeight: 800,
-      color: '#ad3019'}}>BLOCKED · 2 CONFLICTING_VALUES</div>
+    <Evidence delay={40} size={37} accent>BLOCKED · 2 CONFLICTING_VALUES</Evidence>
   </Frame>
 );
 
@@ -167,10 +194,8 @@ const ConflictQuotes: React.FC = () => (
       crop={[{at: 0, x: 430, y: 690, w: 970, h: 500},
         {at: 5, x: 630, y: 690, w: 700, h: 500},
         {at: 10, x: 630, y: 690, w: 700, h: 500}]} />
-    <div style={{position: 'absolute', top: 1508, left: 60, right: 60,
-      fontSize: 35, fontWeight: 800, lineHeight: 1.35}}>
-      Individual: p.1 $600 → p.2 $900<br />Family: p.1 $1,200 → p.2 $1,800
-    </div>
+    <Evidence delay={48} top={1505} size={36}>Individual · p.1 $600 → p.2 $900</Evidence>
+    <Evidence delay={158} top={1610} size={36}>Family · p.1 $1,200 → p.2 $1,800</Evidence>
   </Frame>
 );
 
@@ -182,9 +207,7 @@ const Review: React.FC = () => (
         {at: 4, x: 520, y: 690, w: 850, h: 510},
         {at: 5.5, x: 520, y: 110, w: 850, h: 520},
         {at: 8, x: 520, y: 110, w: 850, h: 520}]} />
-    <div style={{position: 'absolute', top: 1510, left: 60, fontSize: 37, fontWeight: 800}}>
-      $900 individual · $1,800 family
-    </div>
+    <Evidence delay={115} size={37}>Chosen · $900 individual · $1,800 family</Evidence>
   </Frame>
 );
 
@@ -195,26 +218,23 @@ const Ready: React.FC = () => (
       crop={[{at: 0, x: 520, y: 110, w: 850, h: 540},
         {at: 3.3, x: 520, y: 110, w: 850, h: 540},
         {at: 7, x: 500, y: 380, w: 920, h: 650}]} />
-    <div style={{position: 'absolute', top: 1510, left: 60, right: 60, fontSize: 35,
-      fontWeight: 800}}>Reviewed JSON · value 900 / extracted_value 600 / page 2</div>
+    <Evidence delay={45} top={1508} size={38}>After review · Ready to load</Evidence>
+    <Evidence delay={133} top={1615} size={32}>JSON · value 900 / extracted 600 / p.2</Evidence>
   </Frame>
 );
 
 const Eval: React.FC = () => {
-  const f = useCurrentFrame();
   const lines = ['npm test', '7 test files · 56 tests passed', 'npm run eval',
     '6 / 6 synthetic dispositions', 'All thresholds met.'];
-  const shown = Math.floor(interpolate(f, [0, 150], [0, lines.length],
-    {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}));
   return (
     <Frame eyebrow="04 / regression gates" title="The build checks its rules."
       detail="The published test and evaluation results are reproducible in the repo.">
       <div style={{position: 'absolute', left: 60, right: 60, top: 645, height: 740,
         background: INK, borderRadius: 26, padding: 44, boxSizing: 'border-box',
         color: '#d7f5dd', font: `38px/1.85 ${MONO}`}}>
-        {lines.slice(0, shown).map((line) => <div key={line}>{line}</div>)}
+        {lines.map((line, i) => <Reveal key={line} delay={25 + i * 27} distance={14}>{line}</Reveal>)}
       </div>
-      <Card top={1420} color="#ffe2ca">
+      <Card top={1420} color="#ffe2ca" delay={139}>
         Six synthetic cases, written alongside the rules. Regression check, not real-world accuracy.
       </Card>
     </Frame>
@@ -228,8 +248,7 @@ const Gap: React.FC = () => (
       crop={[{at: 0, x: 440, y: 430, w: 1040, h: 430},
         {at: 1.4, x: 440, y: 560, w: 1040, h: 200},
         {at: 7, x: 440, y: 560, w: 1040, h: 200}]} />
-    <div style={{position: 'absolute', top: 1510, left: 60, fontSize: 42,
-      fontWeight: 800, color: '#ad3019'}}>T11 accessibility: FAIL</div>
+    <Evidence delay={52} size={42} accent>T11 accessibility: FAIL</Evidence>
   </Frame>
 );
 
@@ -243,26 +262,28 @@ const AiArchive: React.FC<{late?: boolean}> = ({late}) => (
         {at: 7, x: 60, y: 480, w: 960, h: 1120}]
         : [{at: 0, x: 60, y: 350, w: 960, h: 1200},
           {at: 8, x: 60, y: 350, w: 960, h: 1200}]} />
-    <div style={{position: 'absolute', top: 1510, left: 60, right: 60,
-      fontSize: 34, fontWeight: 800}}>{late ? 'Blue Harbor Health · AI_FILLED_FIELD · p.1 line 1'
-        : 'Archive only · rules run regardless of the AI checkbox'}</div>
+    <Evidence delay={45} size={34}>{late ? 'Blue Harbor Health · AI_FILLED_FIELD · p.1 line 1'
+      : 'Archive only · rules run regardless of the AI checkbox'}</Evidence>
   </Frame>
 );
 
-const Close: React.FC = () => (
-  <Frame eyebrow="Benefits Intake QA" title="Review with the evidence."
+const Close: React.FC = () => {
+  const f = useCurrentFrame();
+  const p = progress(f, 27, 32);
+  return <Frame eyebrow="Benefits Intake QA" title="Review with the evidence."
     detail="Page quotes · conflict checks · human choice · reviewed JSON" orange>
     <Img src={staticFile('launch/logo.svg')} style={{position: 'absolute', left: 70, top: 715,
-      width: 770, height: 200, objectFit: 'contain', objectPosition: 'left'}} />
-    <Card top={1120} color="#fff7ef">
+      width: 770, height: 200, objectFit: 'contain', objectPosition: 'left',
+      opacity: p, transform: `translateY(${(1 - p) * 35}px)`}} />
+    <Card top={1120} color="#fff7ef" delay={54}>
       Next gates: OCR for scanned PDFs, then held-out, consented real-document validation.
     </Card>
     <div style={{position: 'absolute', top: 1490, left: 60, right: 60, fontSize: 33,
-      fontWeight: 700, overflowWrap: 'anywhere'}}>
+      fontWeight: 700, overflowWrap: 'anywhere', opacity: progress(f, 110)}}>
       github.com/CashpointSoulja/benefits-intake-qa
     </div>
-  </Frame>
-);
+  </Frame>;
+};
 
 const scenes: {seconds: number; component: React.ReactNode}[] = [
   {seconds: 6, component: <Title />},
@@ -282,6 +303,17 @@ const scenes: {seconds: number; component: React.ReactNode}[] = [
 
 export const VERTICAL_FRAMES = scenes.reduce((sum, scene) => sum + scene.seconds * FPS, 0);
 
+const Transition: React.FC<{children: React.ReactNode; chapter: boolean; first: boolean}> =
+  ({children, chapter, first}) => {
+    const f = useCurrentFrame();
+    const p = first ? 1 : progress(f, 0, 12);
+    return <AbsoluteFill style={chapter
+      ? {clipPath: `inset(0 ${100 * (1 - p)}% 0 0)`}
+      : {opacity: p, transform: `translateY(${(1 - p) * 24}px) scale(${1.012 - p * 0.012})`}}>
+      {children}
+    </AbsoluteFill>;
+  };
+
 export const Vertical: React.FC = () => {
   let from = 0;
   return (
@@ -289,8 +321,11 @@ export const Vertical: React.FC = () => {
       {scenes.map((scene, i) => {
         const start = from;
         from += scene.seconds * FPS;
-        return <Sequence key={i} from={start} durationInFrames={scene.seconds * FPS}>
-          {scene.component}
+        const overlap = i === 0 ? 0 : 12;
+        return <Sequence key={i} from={start - overlap} durationInFrames={scene.seconds * FPS + overlap}>
+          <Transition first={i === 0} chapter={[1, 2, 4, 6, 8, 9, 10, 12].includes(i)}>
+            {scene.component}
+          </Transition>
         </Sequence>;
       })}
     </AbsoluteFill>
