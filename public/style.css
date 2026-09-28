@@ -89,7 +89,8 @@ footer { padding: 6px 24px 40px; }
 footer code { background: #f1e7db; padding: 1px 5px; border-radius: 4px; }
 
 .brandlock { display: inline-flex; align-items: center; gap: 12px; }
-.eu-logo { width: 164px; height: 36px; object-fit: cover; display: block; border-radius: 4px; }
+.eu-logo { width: 164px; height: 36px; flex-shrink: 0; object-fit: cover; display: block; border-radius: 4px; }
+@media (max-width: 480px) { .nav { flex-wrap: wrap; gap: 12px; } .eu-logo { width: 128px; height: 28px; } }
 .brandlock .x { font-size: 18px; opacity: .6; }
 .eyebrow { font-weight: 700; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; margin: 0 0 10px; }
 .eyebrow.dark { color: var(--orange); }
