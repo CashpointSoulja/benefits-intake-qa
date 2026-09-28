@@ -20,7 +20,7 @@ This plan checks that the shipped prototype does what the [PRD](PRD.md) acceptan
 | Level | Tool | Entry | Exit (pass) |
 |---|---|---|---|
 | L1 Static | `npm run typecheck` (tsc strict) | Clean checkout, `npm ci` | 0 errors |
-| L2 Unit/integration | `npm test` (Vitest, 25 tests), including a real pdf.js parse of the sample PDFs in Node | L1 pass | All pass |
+| L2 Unit/integration | `npm test` (Vitest; 25 tests at v0.1, 56 today), including a real pdf.js parse of the sample PDFs in Node | L1 pass | All pass |
 | L3 Evaluation | `npm run eval` against `eval/golden/cases.json` (6 synthetic cases) | L2 pass | Field precision ≥ 0.95, field recall ≥ 0.90, finding recall = 1.00, disposition accuracy = 1.00 |
 | L4 Production browser | Chrome, production URL, synthetic PDFs only | Deployed assets match `main` (hash check) | All P0 cases pass. Failures are logged with evidence |
 | L5 Demo | 45–90 s screen recording of production | L4 run | Frames inspected: legible, production URL only, no test harness |

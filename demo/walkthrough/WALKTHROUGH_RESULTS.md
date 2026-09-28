@@ -12,4 +12,3 @@ OpenAI second opinion was never ticked. Every /api/analyze request was logged wi
 
 The published docs shown in the video are PRD.md, TEST_PLAN.md, TEST_RESULTS.md (the T11 accessibility row is marked **Fail**) and ROADMAP.md (known issues).
 
-Known stale line visible in the video: the ROADMAP known-issues row still says the OpenAI replacement is "not deployed".
