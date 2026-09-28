@@ -11,7 +11,8 @@ A small tool that turns a benefits plan document into structured fields, links e
   - [Test results](docs/TEST_RESULTS.md)
   - [Role viability](docs/ROLE_VIABILITY.md) (demonstrated work vs. hypothetical customer need)
   - [Roadmap](docs/ROADMAP.md) (gated v2)
-  - **Featured:** [launch demo](demo/benefits-intake-qa-launch-demo.mp4) (Remotion-produced, 84 s, real production footage; AI shown only from a labelled archive clip)
+  - **Featured:** [vertical launch demo](demo/benefits-intake-qa-launch-vertical.mp4) (silent, 1080×1920, 96 s, Remotion, real production footage) · [first-person timed voiceover](demo/VOICEOVER.md) · [matching SRT](demo/VOICEOVER.srt)
+  - [Original landscape launch cut](demo/benefits-intake-qa-launch-demo.mp4) (84 s; archive AI shown only as a labelled clip)
   - [Rules-only production walkthrough, Sept 28](demo/benefits-intake-qa-walkthrough.mp4) (raw source footage, shows the corrected docs) and [original production demo, Sept 27](demo/benefits-intake-qa-demo.mp4) (81 s)
 - **Stack:** a Cloudflare Worker (TypeScript API) serves the static frontend from `public/`. An optional, server-side OpenAI second opinion (`gpt-5.4-nano-2026-03-17`) sits behind a lifetime budget gate in a SQLite Durable Object (`BudgetGate`).
 

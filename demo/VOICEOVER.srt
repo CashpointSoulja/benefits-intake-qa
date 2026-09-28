@@ -1,0 +1,55 @@
+1
+00:00:00,000 --> 00:00:06,000
+I built Benefits Intake QA to catch plan-data errors before go-live.
+
+2
+00:00:06,000 --> 00:00:12,000
+When plan pages disagree, I want reviewers to see the source before loading a value.
+
+3
+00:00:12,000 --> 00:00:19,000
+On this synthetic plan, page one quotes forty-five hundred dollars individual, but only thirty-five hundred family.
+
+4
+00:00:19,000 --> 00:00:26,000
+The rules block it and show both lines. The family maximum cannot be lower than the individual.
+
+5
+00:00:26,000 --> 00:00:32,000
+Another plan has two pages and two conflicting deductibles. The result is blocked.
+
+6
+00:00:32,000 --> 00:00:37,000
+Individual deductible: six hundred on page one, nine hundred on page two.
+
+7
+00:00:37,000 --> 00:00:42,000
+Family: twelve hundred on page one, eighteen hundred on page two. Both quotes stay visible.
+
+8
+00:00:42,000 --> 00:00:50,000
+I choose both page-two quotes, then accept the other fields. The original evidence stays attached.
+
+9
+00:00:50,000 --> 00:00:57,000
+After review, it becomes ready. The export keeps my nine hundred and the original six hundred.
+
+10
+00:00:57,000 --> 00:01:05,000
+The build passes fifty-six tests and a six-case synthetic evaluation. That checks regressions, not real-world accuracy.
+
+11
+00:01:05,000 --> 00:01:12,000
+I publish failures too: accessibility test T-eleven fails, scans need OCR, and real-document accuracy is unmeasured.
+
+12
+00:01:12,000 --> 00:01:20,000
+This earlier AI call is a genuine production archive. I made no new paid call for this video.
+
+13
+00:01:20,000 --> 00:01:27,000
+The AI-filled carrier stays only because it appears on page one. Rules still run first.
+
+14
+00:01:27,000 --> 00:01:36,000
+This is my independent prototype: source evidence, human review, and open validation gaps before anyone adopts it.
